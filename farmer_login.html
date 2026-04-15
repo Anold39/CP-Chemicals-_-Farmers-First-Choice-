@@ -33,14 +33,14 @@
             <div class="benefits-panel">
                 <h2>Join the CP Farmer Network</h2>
                 <p>Register today to unlock exclusive benefits tailored for your farm's success.</p>
-                <ul class="benefit-list" style="list-style: none; padding: 0; line-height: 2;">
-                    <li><i class="fas fa-percentage" style="color: #2e7d32; width: 25px;"></i> 10% First-Order Discount</li>
-                    <li><i class="fas fa-flask" style="color: #2e7d32; width: 25px;"></i> Early access to new chemicals</li>
-                    <li><i class="fas fa-calendar-check" style="color: #2e7d32; width: 25px;"></i> Seasonal planting reminders</li>
-                    <li><i class="fas fa-star" style="color: #2e7d32; width: 25px;"></i> Loyalty Reward Points</li>
+                <ul class="benefit-list">
+                    <li><i class="fas fa-percentage"></i> 10% First-Order Discount</li>
+                    <li><i class="fas fa-flask"></i> Early access to new chemicals</li>
+                    <li><i class="fas fa-calendar-check"></i> Seasonal planting reminders</li>
+                    <li><i class="fas fa-star"></i> Loyalty Reward Points</li>
                 </ul>
                 
-                <div class="stars" id="ratingSystem" style="margin-top: 20px; font-size: 1.5rem; color: #fbc02d;">
+                <div class="stars" id="ratingSystem">
                     <i class="far fa-star" data-index="1"></i>
                     <i class="far fa-star" data-index="2"></i>
                     <i class="far fa-star" data-index="3"></i>
@@ -49,40 +49,42 @@
                 </div>
             </div>
 
-            <div class="registration-form-card card">
+            <div class="registration-form-card">
                 <h3>Farmer Registration</h3>
-                <form action="#" onsubmit="event.preventDefault(); alert('Registration Successful! Welcome to the CP Network.');">
+                <form action="#">
                     <div class="form-group">
                         <label>Full Name</label>
-                        <input type="text" placeholder="Enter your name" required style="width: 100%; padding: 10px; margin-top: 5px;">
+                        <input type="text" placeholder="Enter your name" required>
                     </div>
                     
-                    <div class="form-row" style="display: flex; gap: 10px; margin-top: 15px;">
-                        <div class="form-group" style="flex: 1;">
+                    <div class="form-row">
+                        <div class="form-group">
                             <label>Phone Number</label>
-                            <input type="tel" placeholder="+263..." required style="width: 100%; padding: 10px; margin-top: 5px;">
+                            <input type="tel" placeholder="+263..." required>
                         </div>
-                        <div class="form-group" style="flex: 1;">
+                        <div class="form-group">
                             <label>Email (Optional)</label>
-                            <input type="email" placeholder="email@example.com" style="width: 100%; padding: 10px; margin-top: 5px;">
+                            <input type="email" placeholder="email@example.com">
                         </div>
                     </div>
                     
-                    <div class="form-group" style="margin-top: 15px;">
+                    <div class="form-group">
                         <label>Farm Location / District</label>
-                        <select required style="width: 100%; padding: 10px; margin-top: 5px;">
+                        <select required>
                             <option value="">Select District</option>
-                            <option value="mazowe">Mazowe</option>
+                            <option value="karoi">Karoi</option>
                             <option value="mvurwi">Mvurwi</option>
                             <option value="bindura">Bindura</option>
                             <option value="harare">Harare</option>
+                            <option value="chegutu">Chegutu</option>
+                            <option value="chinhoyi">Chinhoyi</option>
                             <option value="other">Other</option>
                         </select>
                     </div>
                     
-                    <div class="form-group" style="margin-top: 15px;">
+                    <div class="form-group">
                         <label>Primary Crop Interest</label>
-                        <div class="checkbox-grid" style="display: grid; grid-template-columns: 1fr 1fr; gap: 5px; margin-top: 10px;">
+                        <div class="checkbox-grid">
                             <label><input type="checkbox"> Maize</label>
                             <label><input type="checkbox"> Tobacco</label>
                             <label><input type="checkbox"> Soya</label>
@@ -90,18 +92,14 @@
                         </div>
                     </div>
                     
-                    <div class="form-group" style="margin-top: 15px;">
+                    <div class="form-group">
                         <label>Farm Size (Hectares)</label>
-                        <input type="number" placeholder="e.g. 5" style="width: 100%; padding: 10px; margin-top: 5px;">
+                        <input type="number" placeholder="e.g. 5">
                     </div>
                     
-                    <button type="submit" class="btn-shop register-btn" style="width: 100%; margin-top: 25px; padding: 15px;">
-                        Create Farmer Account
-                    </button>
+                    <button type="submit" class="btn-shop register-btn">Create Farmer Account</button>
                 </form>
-                <p class="login-redirect" style="text-align: center; margin-top: 15px; font-size: 0.9rem;">
-                    Already registered? <a href="#" style="color: #2e7d32; font-weight: bold;">Login here</a>
-                </p>
+                <p class="login-redirect">Already registered? <a href="#">Login here</a></p>
             </div>
         </div>
     </main>
@@ -115,9 +113,7 @@
         </div>
         <p>&copy; 2026 CP Chemicals PVT Limited. All Rights Reserved.</p>
         <br>
-        <a href="staff_login.html" style="color: #777; font-size: 0.75rem; text-decoration: none;">
-            <i class="fas fa-lock"></i> Authorized Staff Portal
-        </a>
+        <a href="staff_login.html" style="color: #777; font-size: 0.75rem; text-decoration: none;"><i class="fas fa-lock"></i> Authorized Staff Portal</a>
     </footer>
 
     <script src="script.js"></script>
