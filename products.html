@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CP Chemicals | Products</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+
+    <header>
+        <nav>
+            <div class="logo">
+                <img src="20th Anniversary.png" alt="20th Anniversary" class="Anniversary">
+            </div>
+            <ul class="nav-links">
+                <li><button><a href="index.html">Home</a></button></li>
+                <li><button><a href="who_we_are.html">Who We Are</a></button></li>
+                <li><button><a href="products.html">Products</a></button></li>
+                <li><button><a href="agritalk.html">Agri-Talk</a></button></li>
+                <li><button><a href="branches.html">Branches</a></button></li>
+                <li><button><a href="shop_online.html" class="btn-shop">
+                    <i class="fas fa-shopping-cart"></i> Cart (<span id="cart-count">0</span>)
+                </a></button></li>
+                <li><button><a href="farmer_login.html">Farmer Registration</a></button></li>
+            </ul>
+        </nav>
+    </header>
+
+    <section class="container section-margin">
+        <h2 class="section-title">Our 2026 Product Catalog</h2>
+        
+        <div class="table-container">
+            <table class="data-table">
+                <thead>
+                    <tr>
+                        <th>Product</th>
+                        <th>Name & Description</th>
+                        <th>Category</th>
+                        <th>Unit Size</th>
+                        <th>Price (USD)</th>
+                        <th>Quantity</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><img src="https://images.unsplash.com/photo-1592982537447-7440770cbfc9?w=80" alt="Maize" class="table-img"></td>
+                        <td><b>CP Maize Booster</b><br><small>High-yield top dressing</small></td>
+                        <td>Fertilizer</td>
+                        <td>50kg Bag</td>
+                        <td>$35.00</td>
+                        <td><input type="number" id="qty-1" value="1" min="1" class="qty-input"></td>
+                        <td><button class="btn-shop" onclick="addToCart('CP Maize Booster', 35.00, 'qty-1')">Add</button></td>
+                    </tr>
+
+                    <tr>
+                        <td><img src="https://images.unsplash.com/photo-1628352081506-83c43123ed6d?w=80" alt="Termi-Kill" class="table-img"></td>
+                        <td><b>Termi-Kill 500</b><br><small>Advanced termite control</small></td>
+                        <td>Insecticide</td>
+                        <td>1 Litre</td>
+                        <td>$12.50</td>
+                        <td><input type="number" id="qty-2" value="1" min="1" class="qty-input"></td>
+                        <td><button class="btn-shop" onclick="addToCart('Termi-Kill 500', 12.50, 'qty-2')">Add</button></td>
+                    </tr>
+
+                    <tr>
+                        <td><img src="https://images.unsplash.com/photo-1589923188900-85dae523342b?w=80" alt="Glyphosate" class="table-img"></td>
+                        <td><b>CP-Glyphosate Max</b><br><small>Total weed control</small></td>
+                        <td>Herbicide</td>
+                        <td>5 Litre</td>
+                        <td>$45.00</td>
+                        <td><input type="number" id="qty-3" value="1" min="1" class="qty-input"></td>
+                        <td><button class="btn-shop" onclick="addToCart('CP-Glyphosate Max', 45.00, 'qty-3')">Add</button></td>
+                    </tr>
+
+                    <tr>
+                        <td><img src="https://images.unsplash.com/photo-1622383529357-37b2701b911a?w=80" alt="Livestock" class="table-img"></td>
+                        <td><b>Livestock Dip</b><br><small>Tick and parasite protection</small></td>
+                        <td>Vet Care</td>
+                        <td>5 Litre</td>
+                        <td>$55.00</td>
+                        <td><input type="number" id="qty-4" value="1" min="1" class="qty-input"></td>
+                        <td><button class="btn-shop" onclick="addToCart('Livestock Dip', 55.00, 'qty-4')">Add</button></td>
+                    </tr>
+
+                    <tr>
+                        <td><img src="https://images.unsplash.com/photo-1594751175394-47a7f4571958?w=80" alt="Veggie" class="table-img"></td>
+                        <td><b>Veggie Master</b><br><small>Horticulture liquid feed</small></td>
+                        <td>Fertilizer</td>
+                        <td>1 Litre</td>
+                        <td>$8.00</td>
+                        <td><input type="number" id="qty-5" value="1" min="1" class="qty-input"></td>
+                        <td><button class="btn-shop" onclick="addToCart('Veggie Master', 8.00, 'qty-5')">Add</button></td>
+                    </tr>
+
+                    <tr>
+                        <td><img src="https://images.unsplash.com/photo-1605000797499-95a51c5269ae?w=80" alt="Seeds" class="table-img"></td>
+                        <td><b>CP Maize Seed (SC719)</b><br><small>Drought resistant hybrid</small></td>
+                        <td>Seeds</td>
+                        <td>10kg Bag</td>
+                        <td>$28.00</td>
+                        <td><input type="number" id="qty-6" value="1" min="1" class="qty-input"></td>
+                        <td><button class="btn-shop" onclick="addToCart('CP Maize Seed (SC719)', 28.00, 'qty-6')">Add</button></td>
+                    </tr>
+
+                    <tr>
+                        <td><img src="https://images.unsplash.com/photo-1512149177596-f817c7ef5d4c?w=80" alt="Knapsack" class="table-img"></td>
+                        <td><b>CP Knapsack Sprayer</b><br><small>16L Manual pump</small></td>
+                        <td>Hardware</td>
+                        <td>Each</td>
+                        <td>$22.00</td>
+                        <td><input type="number" id="qty-7" value="1" min="1" class="qty-input"></td>
+                        <td><button class="btn-shop" onclick="addToCart('CP Knapsack Sprayer', 22.00, 'qty-7')">Add</button></td>
+                    </tr>
+
+                    <tr>
+                        <td><img src="https://images.unsplash.com/photo-1523348837708-15d4a09cfac2?w=80" alt="Tomato" class="table-img"></td>
+                        <td><b>Copper Oxychloride</b><br><small>Fungicide for vegetables</small></td>
+                        <td>Fungicide</td>
+                        <td>500g</td>
+                        <td>$10.00</td>
+                        <td><input type="number" id="qty-8" value="1" min="1" class="qty-input"></td>
+                        <td><button class="btn-shop" onclick="addToCart('Copper Oxychloride', 10.00, 'qty-8')">Add</button></td>
+                    </tr>
+
+                    <tr>
+                        <td><img src="https://images.unsplash.com/photo-1615811361523-6bd03d7748e7?w=80" alt="Boot" class="table-img"></td>
+                        <td><b>Protective Gumboots</b><br><small>Heavy duty rubber</small></td>
+                        <td>PPE</td>
+                        <td>Pair</td>
+                        <td>$15.00</td>
+                        <td><input type="number" id="qty-9" value="1" min="1" class="qty-input"></td>
+                        <td><button class="btn-shop" onclick="addToCart('Protective Gumboots', 15.00, 'qty-9')">Add</button></td>
+                    </tr>
+
+                    <tr>
+                        <td><img src="https://images.unsplash.com/photo-1471193945509-9ad0617afabf?w=80" alt="Rat" class="table-img"></td>
+                        <td><b>Rat-Ban Pellets</b><br><small>Single feed rodenticide</small></td>
+                        <td>Pest Control</td>
+                        <td>100g</td>
+                        <td>$3.50</td>
+                        <td><input type="number" id="qty-10" value="1" min="1" class="qty-input"></td>
+                        <td><button class="btn-shop" onclick="addToCart('Rat-Ban Pellets', 3.50, 'qty-10')">Add</button></td>
+                    </tr>
+
+                </tbody>
+            </table>
+        </div>
+    </section>
+
+    <footer>
+        <div class="social-links">
+            <a href="https://share.google/gHRP1nYVd6uUMx2Lu" target="_blank"><i class="fab fa-facebook"></i></a>
+            <a href="https://share.google/m4RnzcG3EDBcL40NN" target="_blank"><i class="fab fa-instagram"></i></a>
+            <a href="https://wa.me/263777379313" target="_blank"><i class="fab fa-whatsapp"></i></a>
+            <a href="https://share.google/j2qOR9dEkIJhUSEXc" target="_blank"><i class="fab fa-x-twitter"></i></a>
+        </div>
+        <p>&copy; 2026 CP Chemicals PVT Limited. All Rights Reserved.</p>
+        <br>
+      <a href="staff_login.html" style="color: #777; font-size: 0.75rem; text-decoration: none;"><i class="fas fa-lock"></i> Authorized Staff Portal</a>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+</html>

@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CP Chemicals | Your Cart</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+
+    <header>
+        <nav>
+            <div class="logo">
+                <img src="20th Anniversary.png" alt="20th Anniversary" class="Anniversary">
+            </div>
+            <ul class="nav-links">
+                <li><button><a href="index.html">Home</a></button></li>
+                <li><button><a href="who_we_are.html">Who We Are</a></button></li>
+                <li><button><a href="products.html">Products</a></button></li>
+                <li><button><a href="agritalk.html">Agri-Talk</a></button></li>
+                <li><button><a href="branches.html">Branches</a></button></li>
+                <li><button><a href="shop_online.html" class="btn-shop">
+                    <i class="fas fa-shopping-cart"></i> Cart (<span id="cart-count">0</span>)
+                </a></button></li>
+                <li><button><a href="farmer_login.html">Farmer Registration</a></button></li>
+            </ul>
+        </nav>
+    </header>
+
+    <section class="container section-margin">
+        <h2 class="section-title">Your Shopping Cart</h2>
+        
+        <div class="shop-layout">
+            <div class="cart-table-area">
+                <div class="table-container"> 
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>Product</th>
+                                <th>Unit Price</th>
+                                <th>Qty</th>
+                                <th>Subtotal</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody id="cart-items">
+                            </tbody>
+                    </table>
+                </div>
+                <button onclick="emptyCart()" class="btn-shop" style="margin-top: 15px; background: #666;">
+                    <i class="fas fa-trash"></i> Empty Cart
+                </button>
+            </div>
+
+            <div class="card order-summary-card">
+                <h3>Order Summary</h3>
+                <hr style="margin: 15px 0;">
+                <div style="display: flex; justify-content: space-between; font-size: 1.2rem; font-weight: bold;">
+                    <span>Grand Total:</span>
+                    <span id="cart-total">$0.00</span>
+                </div>
+                
+                <h4 style="margin-top: 20px;">Payment Gateway</h4>
+                <div class="payment-options" style="margin-top: 20px;">
+                    <p style="margin-bottom: 10px; font-size: 0.9rem; color: #666;">
+                        Select your preferred payment method to complete the order:
+                    </p>
+                    
+                    <button class="btn-shop" onclick="processCheckout('ecocash')" style="width: 100%; padding: 12px; margin-bottom: 10px; background-color: #25d366; border: none; color: white;">
+                        <i class="fas fa-mobile-alt"></i> EcoCash / OneMoney
+                    </button>
+                    
+                    <button class="btn-shop" onclick="processCheckout('visa')" style="width: 100%; padding: 12px; margin-bottom: 10px; background-color: #1a1f71; border: none; color: white;">
+                        <i class="fab fa-cc-visa"></i> Visa / Mastercard
+                    </button>
+
+                    <button class="btn-shop" onclick="processCheckout('bank')" style="width: 100%; padding: 12px; background-color: #004a99; border: none; color: white;">
+                        <i class="fas fa-university"></i> Bank Transfer / ZIPIT
+                    </button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <footer>
+        <div class="social-links">
+            <a href="https://share.google/gHRP1nYVd6uUMx2Lu" target="_blank"><i class="fab fa-facebook"></i></a>
+            <a href="https://share.google/m4RnzcG3EDBcL40NN" target="_blank"><i class="fab fa-instagram"></i></a>
+            <a href="https://wa.me/263777379313" target="_blank"><i class="fab fa-whatsapp"></i></a>
+            <a href="https://share.google/j2qOR9dEkIJhUSEXc" target="_blank"><i class="fab fa-x-twitter"></i></a>
+        </div>
+        
+        <p>&copy; 2026 CP Chemicals PVT Limited. All Rights Reserved.</p>
+        <br>
+        <a href="staff_login.html" style="color: #777; font-size: 0.75rem; text-decoration: none;">
+            <i class="fas fa-lock"></i> Authorized Staff Portal
+        </a>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+</html>

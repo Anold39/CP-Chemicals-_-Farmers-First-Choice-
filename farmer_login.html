@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CP Chemicals | Farmer Registration</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+
+    <header>
+        <nav>
+            <div class="logo">
+                <img src="20th Anniversary.png" alt="20th Anniversary" class="Anniversary">
+            </div>
+            <ul class="nav-links">
+                <li><button><a href="index.html">Home</a></button></li>
+                <li><button><a href="who_we_are.html">Who We Are</a></button></li>
+                <li><button><a href="products.html">Products</a></button></li>
+                <li><button><a href="agritalk.html">Agri-Talk</a></button></li>
+                <li><button><a href="branches.html">Branches</a></button></li>
+                <li><button><a href="shop_online.html" class="btn-shop">
+                    <i class="fas fa-shopping-cart"></i> Cart (<span id="cart-count">0</span>)
+                </a></button></li>
+                <li><button><a href="farmer_login.html">Farmer Registration</a></button></li>
+            </ul>
+        </nav>
+    </header>
+
+    <main class="container section-margin">
+        <div class="registration-wrapper">
+            <div class="benefits-panel">
+                <h2>Join the CP Farmer Network</h2>
+                <p>Register today to unlock exclusive benefits tailored for your farm's success.</p>
+                <ul class="benefit-list" style="list-style: none; padding: 0; line-height: 2;">
+                    <li><i class="fas fa-percentage" style="color: #2e7d32; width: 25px;"></i> 10% First-Order Discount</li>
+                    <li><i class="fas fa-flask" style="color: #2e7d32; width: 25px;"></i> Early access to new chemicals</li>
+                    <li><i class="fas fa-calendar-check" style="color: #2e7d32; width: 25px;"></i> Seasonal planting reminders</li>
+                    <li><i class="fas fa-star" style="color: #2e7d32; width: 25px;"></i> Loyalty Reward Points</li>
+                </ul>
+                
+                <div class="stars" id="ratingSystem" style="margin-top: 20px; font-size: 1.5rem; color: #fbc02d;">
+                    <i class="far fa-star" data-index="1"></i>
+                    <i class="far fa-star" data-index="2"></i>
+                    <i class="far fa-star" data-index="3"></i>
+                    <i class="far fa-star" data-index="4"></i>
+                    <i class="far fa-star" data-index="5"></i>
+                </div>
+            </div>
+
+            <div class="registration-form-card card">
+                <h3>Farmer Registration</h3>
+                <form action="#" onsubmit="event.preventDefault(); alert('Registration Successful! Welcome to the CP Network.');">
+                    <div class="form-group">
+                        <label>Full Name</label>
+                        <input type="text" placeholder="Enter your name" required style="width: 100%; padding: 10px; margin-top: 5px;">
+                    </div>
+                    
+                    <div class="form-row" style="display: flex; gap: 10px; margin-top: 15px;">
+                        <div class="form-group" style="flex: 1;">
+                            <label>Phone Number</label>
+                            <input type="tel" placeholder="+263..." required style="width: 100%; padding: 10px; margin-top: 5px;">
+                        </div>
+                        <div class="form-group" style="flex: 1;">
+                            <label>Email (Optional)</label>
+                            <input type="email" placeholder="email@example.com" style="width: 100%; padding: 10px; margin-top: 5px;">
+                        </div>
+                    </div>
+                    
+                    <div class="form-group" style="margin-top: 15px;">
+                        <label>Farm Location / District</label>
+                        <select required style="width: 100%; padding: 10px; margin-top: 5px;">
+                            <option value="">Select District</option>
+                            <option value="mazowe">Mazowe</option>
+                            <option value="mvurwi">Mvurwi</option>
+                            <option value="bindura">Bindura</option>
+                            <option value="harare">Harare</option>
+                            <option value="other">Other</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group" style="margin-top: 15px;">
+                        <label>Primary Crop Interest</label>
+                        <div class="checkbox-grid" style="display: grid; grid-template-columns: 1fr 1fr; gap: 5px; margin-top: 10px;">
+                            <label><input type="checkbox"> Maize</label>
+                            <label><input type="checkbox"> Tobacco</label>
+                            <label><input type="checkbox"> Soya</label>
+                            <label><input type="checkbox"> Horticulture</label>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group" style="margin-top: 15px;">
+                        <label>Farm Size (Hectares)</label>
+                        <input type="number" placeholder="e.g. 5" style="width: 100%; padding: 10px; margin-top: 5px;">
+                    </div>
+                    
+                    <button type="submit" class="btn-shop register-btn" style="width: 100%; margin-top: 25px; padding: 15px;">
+                        Create Farmer Account
+                    </button>
+                </form>
+                <p class="login-redirect" style="text-align: center; margin-top: 15px; font-size: 0.9rem;">
+                    Already registered? <a href="#" style="color: #2e7d32; font-weight: bold;">Login here</a>
+                </p>
+            </div>
+        </div>
+    </main>
+
+    <footer>
+        <div class="social-links">
+            <a href="https://share.google/gHRP1nYVd6uUMx2Lu" target="_blank"><i class="fab fa-facebook"></i></a>
+            <a href="https://share.google/m4RnzcG3EDBcL40NN" target="_blank"><i class="fab fa-instagram"></i></a>
+            <a href="https://wa.me/263777379313" target="_blank"><i class="fab fa-whatsapp"></i></a>
+            <a href="https://share.google/j2qOR9dEkIJhUSEXc" target="_blank"><i class="fab fa-x-twitter"></i></a>
+        </div>
+        <p>&copy; 2026 CP Chemicals PVT Limited. All Rights Reserved.</p>
+        <br>
+        <a href="staff_login.html" style="color: #777; font-size: 0.75rem; text-decoration: none;">
+            <i class="fas fa-lock"></i> Authorized Staff Portal
+        </a>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+</html>

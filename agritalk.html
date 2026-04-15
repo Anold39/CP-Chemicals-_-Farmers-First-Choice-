@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CP Chemicals | Agri-Talk Platform</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+
+    <header>
+        <nav>
+            <div class="logo">
+                <img src="20th Anniversary.png" alt="20th Anniversary" class="Anniversary">
+            </div>
+            <ul class="nav-links">
+                <li><button><a href="index.html">Home</a></button></li>
+                <li><button><a href="who_we_are.html">Who We Are</a></button></li>
+                <li><button><a href="products.html">Products</a></button></li>
+                <li><button><a href="agritalk.html">Agri-Talk</a></button></li>
+                <li><button><a href="branches.html">Branches</a></button></li>
+                <li><button><a href="shop_online.html" class="btn-shop">
+                    <i class="fas fa-shopping-cart"></i> Cart (<span id="cart-count">0</span>)
+                </a></button></li>
+                <li><button><a href="farmer_login.html">Farmer Registration</a></button></li>
+            </ul>
+        </nav>
+    </header>
+
+    <section class="container section-margin">
+        <h2 class="section-title">Knowledge Hub & Support</h2>
+        
+        <div class="agri-platform" style="display: grid !important; grid-template-columns: 1fr 1fr !important; gap: 30px; align-items: start !important;">
+            
+            <div class="agri-sidebar-wrapper" style="width: 100% !important;">
+                <div class="agri-sidebar" style="margin-bottom: 20px; width: 100% !important;">
+                    <h2 style="margin-top: 0; color: #2e7d32;">Agri-Talk</h2> 
+                    <button class="tab-btn active" onclick="openAgri('tips')" style="width: 100% !important; margin-bottom: 10px;">Farming Tips</button>
+                    <button class="tab-btn" onclick="openAgri('weed')" style="width: 100% !important; margin-bottom: 10px;">Weed Identification</button>
+                    <button class="tab-btn" onclick="openAgri('calibrate')" style="width: 100% !important;">Calibration Guide</button>
+                </div>
+
+                <div class="card" id="agritalk-cart-sidebar" style="border: 1px solid #eee; background: #fdfdfd; width: 100% !important;">
+                    <h3 style="font-size: 1.1rem; color: #1a237e; margin-top: 0;">
+                        <i class="fas fa-shopping-basket"></i> Quick Cart
+                    </h3>
+                    <hr>
+                    <div id="agritalk-cart-items" style="max-height: 250px; overflow-y: auto; margin-bottom: 10px;">
+                        <p style="font-size: 0.85rem; color: #666; text-align: center;">Your cart is empty.</p>
+                    </div>
+                    <div style="font-weight: bold; border-top: 1px solid #eee; padding-top: 10px; display: flex; justify-content: space-between; font-size: 0.9rem;">
+                        <span>Total:</span>
+                        <span id="agritalk-total-display">$0.00</span>
+                    </div>
+                    <button class="btn-shop" style="width:100%; padding:12px; margin-top: 15px; font-size: 0.9rem;" onclick="proceedToCheckout()">
+                        Checkout <i class="fas fa-arrow-right"></i>
+                    </button>
+                </div>
+            </div>
+
+            <div class="agri-content" id="agri-display" style="width: 100% !important; background: white; padding: 25px; border-radius: 8px; border: 1px solid #eee; margin-top: 0; min-height: 450px;">
+                <h3 style="margin-top: 0; color: #2e7d32;">Select a topic to begin</h3>
+                <p>Expert farming advice from CP Chemicals will appear here in the right half of the screen as you select topics from the left.</p>
+            </div>
+
+        </div>
+
+        <div class="customer-ask section-margin">
+            <section class="card">
+                <h3><i class="fas fa-user-md"></i> Ask an Agronomist</h3>
+                <p>Upload photos or videos of your crop/livestock issues for expert diagnosis.</p>
+                <br>
+                <form id="agronomyForm">
+                    <div class="form-group">
+                        <input type="text" id="farmerName" placeholder="Farmer Name / Farm Name" required 
+                               style="width:100%; margin-bottom:10px; padding:10px; border:1px solid #ddd; border-radius:5px;">
+                        
+                        <select id="branchSelect" style="width:100%; margin-bottom:10px; padding:10px; border:1px solid #ddd; border-radius:5px;">
+                            <option value="General">Select Nearest Branch</option>
+                            <option value="Mount Hampden (HQ)">Mount Hampden (HQ)</option>
+                            <option value="Mvurwi Branch">Mvurwi Branch</option>
+                            <option value="Bindura Branch">Bindura Branch</option>
+                            <option value="Chegutu Branch">Chegutu Branch</option>
+                            <option value="Karoi Branch">Karoi Branch</option>
+                            <option value="Chinhoyi Branch">Chinhoyi Branch</option>
+                            <option value="Granite Side Branch">Granite Side Branch</option>
+                            <option value="Zimbabwe Agricultural Showground Branch">Zimbabwe Agricultural Showground Branch</option>
+                        </select>
+                        
+                        <textarea id="queryMessage" placeholder="Describe your crop or livestock issue in detail..." 
+                                  rows="5" style="width:100%; margin-bottom:10px; padding:10px; border:1px solid #ddd; border-radius:5px;"></textarea>
+                        
+                        <label style="display:block; margin-bottom:10px; font-weight:bold;">
+                            <i class="fas fa-paperclip"></i> Attach Photos/Video (Max 10MB):
+                        </label>
+                        <input type="file" accept="image/*,video/*" style="margin-bottom:20px; display:block;">
+                        
+                        <button type="button" class="btn-shop" onclick="submitQuery()" style="width:100%; padding:15px; font-size:1.1rem;">
+                            Submit Case to Agronomy Dept
+                        </button>
+                    </div>
+                </form>
+            </section>
+        </div>
+    </section>
+
+    <footer>
+        <div class="social-links">
+            <a href="https://share.google/gHRP1nYVd6uUMx2Lu" target="_blank"><i class="fab fa-facebook"></i></a>
+            <a href="https://share.google/m4RnzcG3EDBcL40NN" target="_blank"><i class="fab fa-instagram"></i></a>
+            <a href="https://wa.me/263777379313" target="_blank"><i class="fab fa-whatsapp"></i></a>
+            <a href="https://share.google/j2qOR9dEkIJhUSEXc" target="_blank"><i class="fab fa-x-twitter"></i></a>
+        </div>
+        <p>&copy; 2026 CP Chemicals PVT Limited. All Rights Reserved.</p>
+        <br>
+        <a href="staff_login.html" style="color: #777; font-size: 0.75rem; text-decoration: none;">
+            <i class="fas fa-lock"></i> Authorized Staff Portal
+        </a>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+</html>

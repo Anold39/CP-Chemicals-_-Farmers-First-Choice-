@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <script>
+    if (sessionStorage.getItem('staffLoggedIn') !== 'true') {
+        window.location.href = 'staff_login.html';
+    }
+    </script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CP Chemicals | Agronomist Dashboard</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        /* Dashboard-Specific UI */
+        .admin-container { padding: 40px; background: #f4f4f4; min-height: 80vh; font-family: 'Segoe UI', sans-serif; }
+        .dashboard-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px; }
+        .admin-section-title { border-left: 5px solid #2e7d32; padding-left: 15px; margin: 30px 0 20px 0; color: #333; }
+
+        /* Card Styles */
+        .query-card, .blog-form-card, .manage-card { 
+            background: white; border-radius: 8px; padding: 25px; 
+            margin-bottom: 20px; box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        .query-card { display: flex; justify-content: space-between; align-items: center; border-left: 4px solid #1a237e; }
+        .status-pill { padding: 5px 12px; border-radius: 20px; font-size: 0.8rem; background: #ffeeba; color: #856404; font-weight: bold; }
+
+        .blog-form-card input, .blog-form-card textarea {
+            width: 100%; margin-bottom: 15px; padding: 12px;
+            border: 1px solid #ddd; border-radius: 5px; font-size: 1rem;
+        }
+
+        #manage-posts-area table { width: 100%; border-collapse: collapse; margin-top: 15px; }
+        #manage-posts-area tr { border-bottom: 1px solid #eee; }
+        #manage-posts-area td { padding: 12px 5px; }
+
+        .btn-delete { background: #dc3545; color: white; border: none; padding: 8px 12px; border-radius: 4px; cursor: pointer; }
+        .btn-resolve { background: #28a745; color: white; border: none; padding: 8px 12px; border-radius: 4px; cursor: pointer; margin-right: 5px; }
+        
+        .btn-logout { 
+            background: #d32f2f; 
+            color: white; 
+            border: none; 
+            padding: 10px 20px; 
+            border-radius: 25px; 
+            cursor: pointer; 
+            font-weight: bold; 
+            margin-left: 10px;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .btn-logout:hover { background: #b71c1c; box-shadow: 0 2px 8px rgba(0,0,0,0.2); }
+    </style>
+</head>
+<body>
+    <div class="admin-container">
+        
+        <div class="dashboard-header">
+            <div>
+                <h2 style="color: #2e7d32;"><i class="fas fa-user-shield"></i> Agronomy Response Center</h2>
+                <p>Logged in as: <b>Simba (Senior Agronomist)</b></p>
+            </div>
+            
+            <div style="display: flex; align-items: center;">
+                <a href="index.html" class="btn-shop" style="background: #666; text-decoration: none; padding: 10px 20px; border-radius: 25px; color: white; display: flex; align-items: center; gap: 8px;">
+                    <i class="fas fa-arrow-left"></i> Back to Website
+                </a>
+                
+                <button class="btn-logout" onclick="logoutStaff()">
+                    <i class="fas fa-sign-out-alt"></i> Logout
+                </button>
+            </div>
+        </div>
+
+        <hr>
+
+        <h3 class="admin-section-title">Live Farmer Inquiries</h3>
+        <div id="incoming-queries-area">
+            <p style="color:#999; font-style:italic; padding: 20px;">
+                <i class="fas fa-sync fa-spin"></i> Checking for new messages from farmers...
+            </p>
+        </div>
+
+        <h3 class="admin-section-title">Publish to Agri-Talk Hub</h3>
+        <div class="blog-form-card">
+            <h3><i class="fas fa-edit"></i> Create New Expert Post</h3>
+            <form id="blogForm">
+                <input type="text" id="blogTitle" placeholder="Title (e.g., Warning: Fall Armyworm Outbreak)" required>
+                <textarea id="blogContent" placeholder="Write the full expert advice here..." rows="6" required></textarea>
+                
+                <div style="background: #f9f9f9; padding: 15px; border-radius: 8px; border: 1px dashed #1a237e; margin-bottom: 20px;">
+                    <label style="display:block; margin-bottom:10px; font-weight:bold; color: #1a237e;">
+                        <i class="fas fa-camera-retro"></i> Attach Media (Photos/Videos):
+                    </label>
+                    <input type="file" id="blogImage" accept="image/*,video/*" style="width:100%; cursor: pointer;">
+                </div>
+                
+               <button type="button" class="btn-shop" onclick="publishPost()" style="width:100%; padding:15px; font-size:1.1rem;">
+                   Publish Live to Agri-Talk
+               </button>
+            </form>
+        </div>
+
+        <h3 class="admin-section-title">Manage Live Updates</h3>
+        <div class="manage-card">
+            <h3><i class="fas fa-tasks"></i> Active Feed Management</h3>
+            <div id="manage-posts-area">
+                <p style="color:#999; font-style:italic;">Loading updates...</p>
+            </div>
+        </div>
+
+    </div>
+
+    <script>
+        function logoutStaff() {
+            if(confirm("Are you sure you want to log out of the Agronomist Dashboard?")) {
+                sessionStorage.removeItem('staffLoggedIn');
+                window.location.href = 'staff_login.html';
+            }
+        }
+    </script>
+
+    <script src="script.js"></script>
+</body>
+</html>
