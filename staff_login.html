@@ -13,7 +13,6 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            margin: 0;
         }
 
         .login-card {
@@ -26,9 +25,8 @@
             text-align: center;
         }
 
-        .login-card img.CP-logo2 {
+        .login-card img {
             height: 80px;
-            width: auto;
             margin-bottom: 20px;
         }
 
@@ -73,7 +71,6 @@
             font-size: 1rem;
             outline: none;
             transition: 0.3s;
-            box-sizing: border-box;
         }
 
         .input-group input:focus {
@@ -121,12 +118,7 @@
         .back-home:hover {
             color: #1565c0;
         }
-
-        @keyframes shake {
-            0%, 100% {transform: translateX(0);}
-            25% {transform: translateX(-10px);}
-            75% {transform: translateX(10px);}
-        }
+        .CP-logo2 { margin-top: 50%;}
     </style>
 </head>
 <body class="login-body">
@@ -168,20 +160,30 @@
             const pass = document.getElementById('staffPass').value;
             const errorBox = document.getElementById('errorMessage');
 
-            // TEST CREDENTIALS: ID: Admin | Pass: CP2026
+            // Replace 'Admin' and 'CP2026' with your preferred test credentials
             if (id === "Admin" && pass === "CP2026") {
+                // Store the session
                 sessionStorage.setItem('staffLoggedIn', 'true');
-                // Ensuring this matches the file name we just finished
-                window.location.href = 'staff_dashboard.html'; 
+                // Redirect to the portal
+                window.location.href = 'staff_portal.html';
             } else {
                 errorBox.style.display = 'block';
+                // Shake effect for feedback
                 const card = document.querySelector('.login-card');
                 card.style.animation = 'none';
-                card.offsetHeight; // Trigger reflow
+                card.offsetHeight; /* trigger reflow */
                 card.style.animation = 'shake 0.4s';
             }
         }
     </script>
+
+    <style>
+        @keyframes shake {
+            0%, 100% {transform: translateX(0);}
+            25% {transform: translateX(-10px);}
+            75% {transform: translateX(10px);}
+        }
+    </style>
 
 </body>
 </html>
