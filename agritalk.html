@@ -5,14 +5,14 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>CP Chemicals | Agri-Talk Platform</title>
     <link rel="stylesheet" href="style.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 </head>
 <body>
 
     <header>
         <nav>
             <div class="logo">
-                <img src="20th Anniversary.png" alt="20th Anniversary" class="Anniversary">
+                <img src="C:\Users\yaza\CP Chemicals Website\20th Anniversary.png" alt="20th Anniversary" class="Anniversary">
             </div>
             <ul class="nav-links">
                 <li><button><a href="index.html">Home</a></button></li>
@@ -38,7 +38,13 @@
                     <h2 style="margin-top: 0; color: #2e7d32;">Agri-Talk</h2> 
                     <button class="tab-btn active" onclick="openAgri('tips')" style="width: 100% !important; margin-bottom: 10px;">Farming Tips</button>
                     <button class="tab-btn" onclick="openAgri('weed')" style="width: 100% !important; margin-bottom: 10px;">Weed Identification</button>
-                    <button class="tab-btn" onclick="openAgri('calibrate')" style="width: 100% !important;">Calibration Guide</button>
+                    <button class="tab-btn" onclick="openAgri('calibrate')" style="width: 100% !important; margin-bottom: 10px;">Calibration Guide</button>
+                    
+                    <a href="test-advisor.html" style="text-decoration: none;">
+                        <button class="tab-btn" style="width: 100% !important; background-color: #2e7d32; color: white; border: 2px solid #1b5e20;">
+                            <i class="fas fa-robot"></i> AI Advisory Portal
+                        </button>
+                    </a>
                 </div>
 
                 <div class="card" id="agritalk-cart-sidebar" style="border: 1px solid #eee; background: #fdfdfd; width: 100% !important;">
@@ -89,7 +95,7 @@
                         </select>
                         
                         <textarea id="queryMessage" placeholder="Describe your crop or livestock issue in detail..." 
-                                  rows="5" style="width:100%; margin-bottom:10px; padding:10px; border:1px solid #ddd; border-radius:5px;"></textarea>
+                                  rows="5" style="width:100%; margin-bottom:10px; padding:10px; border:1px solid #ddd; border-radius:5px Pip"></textarea>
                         
                         <label style="display:block; margin-bottom:10px; font-weight:bold;">
                             <i class="fas fa-paperclip"></i> Attach Photos/Video (Max 10MB):
@@ -105,19 +111,27 @@
         </div>
     </section>
 
-    <footer>
-        <div class="social-links">
-            <a href="https://share.google/gHRP1nYVd6uUMx2Lu" target="_blank"><i class="fab fa-facebook"></i></a>
-            <a href="https://share.google/m4RnzcG3EDBcL40NN" target="_blank"><i class="fab fa-instagram"></i></a>
-            <a href="https://wa.me/263777379313" target="_blank"><i class="fab fa-whatsapp"></i></a>
-            <a href="https://share.google/j2qOR9dEkIJhUSEXc" target="_blank"><i class="fab fa-x-twitter"></i></a>
-        </div>
-        <p>&copy; 2026 CP Chemicals PVT Limited. All Rights Reserved.</p>
-        <br>
-        <a href="staff_login.html" style="color: #777; font-size: 0.75rem; text-decoration: none;">
-            <i class="fas fa-lock"></i> Authorized Staff Portal
+<footer>
+    <div class="social-links">
+        <a href="https://share.google/gHRP1nYVd6uUMx2Lu" target="_blank">
+            <i class="fab fa-facebook-f"></i>
         </a>
-    </footer>
+        <a href="https://share.google/m4RnzcG3EDBcL40NN" target="_blank">
+            <i class="fab fa-instagram"></i>
+        </a>
+        <a href="https://wa.me/263777379313" target="_blank">
+            <i class="fab fa-whatsapp"></i>
+        </a>
+        <a href="https://share.google/j2qOR9dEkIJhUSEXc" target="_blank">
+            <i class="fab fa-x-twitter"></i>
+        </a>
+    </div>
+    <p>&copy; 2026 CP Chemicals PVT Limited. All Rights Reserved.</p>
+    <br>
+    <a href="staff_login.html" style="color: #777; font-size: 0.75rem; text-decoration: none;">
+        <i class="fas fa-lock"></i> Authorized Staff Portal
+    </a>
+</footer>
 
     <script src="script.js"></script>
 </body>
