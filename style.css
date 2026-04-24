@@ -47,8 +47,68 @@ nav {
 .CP-logo { height: 40px; }
 .CP-logo2 { height: 60px; width: 100px; }
 .CP-logo3 { height: 120px; width: 250px; }
-.Anniversary { height: 55px; margin-left: 0; }
+.Anniversary { height: 70px; margin-left: 0; }
 .Anniversary1 { height: 220px; width: 300px; }
+
+/* --- Global Logo Interaction Styles --- */
+
+/* 1. Set the cursor and transition for the logo image */
+.Anniversary {
+    transition: all 0.3s ease-in-out;
+    cursor: pointer;
+    display: block; /* Ensures the link area wraps correctly */
+}
+
+/* 2. Effect when the visitor hovers over the logo */
+.Anniversary:hover {
+    transform: scale(1.08); /* Slight enlargement */
+    filter: drop-shadow(0 0 10px rgba(46, 125, 50, 0.5)); /* CP Green glow */
+}
+
+/* 3. Optional: Subtle pulse animation to hint it's clickable */
+@keyframes hint-pulse {
+    0% { opacity: 1; }
+    50% { opacity: 0.8; }
+    100% { opacity: 1; }
+}
+
+/* This makes the logo "breathe" slightly to invite a click */
+.Anniversary {
+    animation: hint-pulse 3s infinite ease-in-out;
+}
+
+/* Container to stack logo and text vertically */
+.logo-link {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-decoration: none; /* Removes underline from the link */
+    transition: transform 0.3s ease;
+}
+
+/* The "Watch Intro" text styling */
+.intro-hint {
+    font-size: 0.7rem;
+    color: #2e7d32; /* CP Chemicals Green */
+    font-weight: bold;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-top: 2px; /* Small gap between logo and text */
+    opacity: 0.9;
+    display: flex;
+    align-items: center;
+    gap: 5px; /* Gap between play icon and text */
+}
+
+/* Hover effect for the entire group */
+.logo-link:hover {
+    transform: translateY(-2px); /* Subtle lift */
+}
+
+.logo-link:hover .intro-hint {
+    color: #1b5e20; /* Darker green on hover */
+    opacity: 1;
+}
 
 .nav-links { 
     list-style: none; 
