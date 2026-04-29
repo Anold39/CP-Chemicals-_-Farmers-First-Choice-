@@ -12,8 +12,8 @@
     <header>
         <nav>
             <div class="logo">
-               <a href="index.html" class="logo-link">
-                <img src="20th Anniversary.png" alt="20th Anniversary" class="Anniversary">
+                <a href="index.html" class="logo-link">
+                <img src="C:\Users\yaza\CP Chemicals Website\20th Anniversary.png" alt="20th Anniversary" class="Anniversary">
                 <span class="intro-hint"><i class="fas fa-play-circle"></i> </span>
                 </a>
             </div>
@@ -32,7 +32,7 @@
     </header>
 
     <section class="container section-margin">
-        <h2 class="section-title">Knowledge Hub & Support</h2>
+        <br><h2 class="section-title">Knowledge Hub & Support</h2>
         
         <div class="agri-platform" style="display: grid !important; grid-template-columns: 1fr 1fr !important; gap: 30px; align-items: start !important;">
             
@@ -40,6 +40,13 @@
                 <div class="agri-sidebar" style="margin-bottom: 20px; width: 100% !important;">
                     <h2 style="margin-top: 0; color: #2e7d32;">Agri-Talk</h2> 
                     <button class="tab-btn active" onclick="openAgri('tips')" style="width: 100% !important; margin-bottom: 10px;">Farming Tips</button>
+                    
+                    <a href="news.html" style="text-decoration: none;">
+                        <button class="tab-btn" style="width: 100% !important; margin-bottom: 10px; background-color: #1a237e; color: white;">
+                            <i class="fas fa-newspaper"></i> News & Articles
+                        </button>
+                    </a>
+
                     <button class="tab-btn" onclick="openAgri('weed')" style="width: 100% !important; margin-bottom: 10px;">Weed Identification</button>
                     <button class="tab-btn" onclick="openAgri('calibrate')" style="width: 100% !important; margin-bottom: 10px;">Calibration Guide</button>
                     
@@ -98,7 +105,7 @@
                         </select>
                         
                         <textarea id="queryMessage" placeholder="Describe your crop or livestock issue in detail..." 
-                                  rows="5" style="width:100%; margin-bottom:10px; padding:10px; border:1px solid #ddd; border-radius:5px Pip"></textarea>
+                                  rows="5" style="width:100%; margin-bottom:10px; padding:10px; border:1px solid #ddd; border-radius:5px;"></textarea>
                         
                         <label style="display:block; margin-bottom:10px; font-weight:bold;">
                             <i class="fas fa-paperclip"></i> Attach Photos/Video (Max 10MB):
@@ -142,6 +149,23 @@
     </a>
 </footer>
 
+    <script>
+        // Keeping the existing tab logic for other sections
+        const agriContent = {
+            tips: `<h3>Farming Tips</h3><p>Ensure you check soil moisture levels before applying top-dressing fertilizer...</p>`,
+            weed: `<h3>Weed Identification</h3><p>Common weeds in Zimbabwe include Blackjack and Pigweed. Use CP-Glyphosate for clearing...</p>`,
+            calibrate: `<h3>Calibration Guide</h3><p>Maintain a constant walking speed to ensure uniform chemical application...</p>`
+        };
+
+        function openAgri(topic) {
+            const display = document.getElementById('agri-display');
+            display.innerHTML = agriContent[topic];
+            
+            // Remove active class from all and add to current
+            document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+            event.currentTarget.classList.add('active');
+        }
+    </script>
     <script src="script.js"></script>
 </body>
 </html>

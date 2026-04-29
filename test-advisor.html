@@ -86,21 +86,57 @@
             to { opacity: 1; transform: translateY(0); }
         }
 
-        .product-link {
-            display: inline-block;
-            margin-top: 20px;
+        /* Direct Checkout Styling */
+        .ai-checkout-box {
+            background: #fff;
+            padding: 20px;
+            border-radius: 10px;
+            margin-top: 15px;
+            border: 1px dashed #2e7d32;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+
+        .qty-box {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .qty-box input {
+            width: 70px;
+            padding: 8px;
+            border: 2px solid #2e7d32;
+            border-radius: 5px;
+            font-weight: bold;
+            text-align: center;
+        }
+
+        .btn-instant-pay {
             background: #c62828;
             color: white;
             padding: 12px 25px;
             text-decoration: none;
+            border: none;
             border-radius: 5px;
             font-weight: bold;
+            cursor: pointer;
             transition: 0.3s;
+            font-size: 1rem;
         }
         
-        .product-link:hover {
+        .btn-instant-pay:hover {
             background: #a31f1f;
             transform: scale(1.05);
+        }
+
+        .price-tag {
+            font-size: 1.3rem;
+            color: #d32f2f;
+            font-weight: 800;
         }
     </style>
 </head>
@@ -110,7 +146,7 @@
         <nav>
             <div class="logo">
                 <a href="index.html" class="logo-link">
-                <img src="20th Anniversary.png" alt="20th Anniversary" class="Anniversary">
+                <img src="C:\Users\yaza\CP Chemicals Website\20th Anniversary.png" alt="20th Anniversary" class="Anniversary">
                 <span class="intro-hint"><i class="fas fa-play-circle"></i> </span>
                 </a>
             </div>
@@ -130,7 +166,7 @@
 
     <main>
         <div class="advisor-hero">
-            <br><br><br><br><h1><i class="fas fa-robot"></i> AI Agronomical Advisor</h1>
+           <br><br><br><br><h1><i class="fas fa-robot"></i> AI Agronomical Advisor</h1>
             <p>Empowering Zimbabwean Farmers with Data-Driven Solutions</p>
         </div>
 
@@ -161,8 +197,25 @@
                 <h2 id="outTitle" style="color: #2e7d32;"></h2>
                 <hr>
                 <p><strong>Expert Advice:</strong> <span id="outAdvice"></span></p>
-                <p><strong>Recommended Solution:</strong> <span id="outProduct"></span></p>
-                <a href="products.html" class="product-link"><i class="fas fa-shopping-cart"></i> Order Product Now</a>
+                
+                <div class="ai-checkout-box">
+                    <div>
+                        <p style="margin: 0;"><strong>Prescribed Solution:</strong></p>
+                        <span id="outProduct" style="font-weight: bold; color: #1b5e20; font-size: 1.1rem;"></span>
+                        <div style="margin-top: 5px;">
+                            <span class="price-tag">Total: $<span id="ai-price-display">0.00</span></span>
+                        </div>
+                    </div>
+                    
+                    <div class="qty-box">
+                        <label>Quantity:</label>
+                        <input type="number" id="ai-qty" value="1" min="1" oninput="updateLivePrice()">
+                    </div>
+
+                    <button class="btn-instant-pay" onclick="handleInstantBuy()">
+                        <i class="fas fa-shopping-cart"></i> Add & Checkout
+                    </button>
+                </div>
             </div>
         </section>
     </main>
@@ -181,7 +234,22 @@
         </a>
     </footer>
 
+    <script src="script.js"></script>
+
     <script>
+        const priceList = {
+            "CP Urea Fertilizer": 35.00,
+            "Armyworm Destroyer": 15.00,
+            "CP Compound D": 32.00,
+            "Zinc Sulfate Spray": 12.00,
+            "Soil Sterilizer": 25.00,
+            "Copper Oxychloride": 10.00,
+            "Aphid Insecticide": 14.50,
+            "CP Miticide": 18.00,
+            "Wheat Fungicide": 22.00,
+            "Epsom Salts": 8.00
+        };
+
         const aiKnowledgeBase = {
             "Maize": {
                 "Yellowing from bottom leaves": ["Nitrogen Deficiency", "Your crop needs immediate Top Dressing. Apply CP Urea (46% N) at the recommended rate per hectare.", "CP Urea Fertilizer"],
@@ -220,6 +288,15 @@
             }
         }
 
+        // New function to update the price display dynamically
+        function updateLivePrice() {
+            const productName = document.getElementById('outProduct').innerText;
+            const qty = document.getElementById('ai-qty').value;
+            const unitPrice = priceList[productName] || 0;
+            const total = unitPrice * qty;
+            document.getElementById('ai-price-display').innerText = total.toFixed(2);
+        }
+
         function processAI() {
             const crop = document.getElementById('cropType').value;
             const symptom = document.getElementById('symptomType').value;
@@ -234,9 +311,28 @@
             document.getElementById('outTitle').innerHTML = "<i class='fas fa-check-circle'></i> Diagnosis: " + result[0];
             document.getElementById('outAdvice').innerText = result[1];
             document.getElementById('outProduct').innerText = result[2];
+            
+            // Set initial quantity to 1 and update price
+            document.getElementById('ai-qty').value = 1;
+            updateLivePrice();
 
             output.style.display = "block";
             window.scrollTo({ top: output.offsetTop + 100, behavior: 'smooth' });
+        }
+
+        function handleInstantBuy() {
+            const productName = document.getElementById('outProduct').innerText;
+            const unitPrice = priceList[productName] || 10.00;
+            const qty = document.getElementById('ai-qty').value;
+            
+            if (typeof addToCart === "function") {
+                // Assuming your addToCart takes (name, price, qtyID)
+                addToCart(productName, unitPrice, 'ai-qty');
+                window.location.href = 'shop_online.html';
+            } else {
+                alert("Cart system not detected. Redirecting to Shop...");
+                window.location.href = 'shop_online.html';
+            }
         }
     </script>
 </body>
