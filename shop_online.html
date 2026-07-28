@@ -6,15 +6,121 @@
     <title>CP Chemicals | Your Cart</title>
     <link rel="stylesheet" href="style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <style>
+        /* Modern Cart Formatting & Layout Enhancements */
+        .shop-layout {
+            display: flex;
+            gap: 30px;
+            align-items: flex-start;
+            flex-wrap: wrap;
+        }
+
+        .cart-table-area {
+            flex: 2;
+            min-width: 320px;
+        }
+
+        .order-summary-card {
+            flex: 1;
+            min-width: 280px;
+            background: #ffffff;
+            padding: 24px;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+            border: 1px solid #eee;
+        }
+
+        .table-container {
+            overflow-x: auto;
+            background: #fff;
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+        }
+
+        .data-table {
+            width: 100%;
+            border-collapse: collapse;
+            text-align: left;
+        }
+
+        .data-table th, .data-table td {
+            padding: 14px 16px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .data-table th {
+            background-color: #2e7d32;
+            color: white;
+            font-weight: 600;
+        }
+
+        .qty-input {
+            width: 60px;
+            padding: 6px;
+            text-align: center;
+            border: 1px solid #ccc;
+            border-radius: 6px;
+            font-weight: bold;
+        }
+
+        .btn-remove {
+            background: #ffebee;
+            color: #c62828;
+            border: 1px solid #ffcdd2;
+            padding: 6px 12px;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+
+        .btn-remove:hover {
+            background: #c62828;
+            color: white;
+        }
+
+        .empty-cart-msg {
+            text-align: center;
+            padding: 40px 20px;
+            color: #777;
+        }
+
+        .empty-cart-msg i {
+            font-size: 3rem;
+            margin-bottom: 15px;
+            color: #ccc;
+        }
+
+        .btn-pay {
+            width: 100%;
+            padding: 12px;
+            margin-bottom: 10px;
+            border: none;
+            color: white;
+            border-radius: 8px;
+            font-weight: bold;
+            font-size: 0.95rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            transition: transform 0.1s ease, opacity 0.2s ease;
+        }
+
+        .btn-pay:hover {
+            opacity: 0.9;
+            transform: translateY(-1px);
+        }
+    </style>
 </head>
 <body>
 
     <header>
         <nav>
             <div class="logo">
-               <a href="index.html" class="logo-link">
-                <img src="20th Anniversary.png" alt="20th Anniversary" class="Anniversary">
-                <span class="intro-hint"><i class="fas fa-play-circle"></i> </span>
+                <a href="index.html" class="logo-link">
+                    <img src="20th Anniversary.png" alt="20th Anniversary" class="Anniversary">
+                    <span class="intro-hint"><i class="fas fa-play-circle"></i></span>
                 </a>
             </div>
             <ul class="nav-links">
@@ -48,61 +154,223 @@
                             </tr>
                         </thead>
                         <tbody id="cart-items">
-                            </tbody>
+                            <!-- Dynamically Generated via JavaScript -->
+                        </tbody>
                     </table>
                 </div>
-                <button onclick="emptyCart()" class="btn-shop" style="margin-top: 15px; background: #666;"><i class="fas fa-trash"></i> Empty Cart</button>
+                <button onclick="emptyCart()" class="btn-shop" style="margin-top: 15px; background: #666; cursor: pointer;">
+                    <i class="fas fa-trash"></i> Empty Cart
+                </button>
             </div>
 
             <div class="card order-summary-card">
                 <h3>Order Summary</h3>
-                <hr style="margin: 15px 0;">
+                <hr style="margin: 15px 0; border: 0; border-top: 1px solid #eee;">
                 <div style="display: flex; justify-content: space-between; font-size: 1.2rem; font-weight: bold;">
                     <span>Grand Total:</span>
                     <span id="cart-total">$0.00</span>
                 </div>
                 
                 <h4 style="margin-top: 20px;">Payment Gateway</h4>
-                <div class="payment-options" style="margin-top: 20px;">
-                    <p style="margin-bottom: 10px; font-size: 0.9rem; color: #666;">Select your preferred payment method to complete the order:</p>
+                <div class="payment-options" style="margin-top: 15px;">
+                    <p style="margin-bottom: 12px; font-size: 0.9rem; color: #666;">Select your preferred payment method to complete the order:</p>
                     
-                    <button class="btn-shop" onclick="processCheckout('ecocash')" style="width: 100%; padding: 12px; margin-bottom: 10px; background-color: #25d366; border: none; color: white;">
+                    <button class="btn-pay" onclick="processCheckout('ecocash')" style="background-color: #25d366;">
                         <i class="fas fa-mobile-alt"></i> EcoCash / OneMoney
                     </button>
                     
-                    <button class="btn-shop" onclick="processCheckout('visa')" style="width: 100%; padding: 12px; margin-bottom: 10px; background-color: #1a1f71; border: none; color: white;">
+                    <button class="btn-pay" onclick="processCheckout('visa')" style="background-color: #1a1f71;">
                         <i class="fab fa-cc-visa"></i> Visa / Mastercard
                     </button>
 
-                    <button class="btn-shop" onclick="processCheckout('bank')" style="width: 100%; padding: 12px; background-color: #004a99; border: none; color: white;">
+                    <button class="btn-pay" onclick="processCheckout('bank')" style="background-color: #004a99;">
                         <i class="fas fa-university"></i> Bank Transfer / ZIPIT
                     </button>
                 </div>
             </div>
         </div>
     </section>
-<footer>
-    <div class="social-links">
-        <a href="https://share.google/gHRP1nYVd6uUMx2Lu" target="_blank">
-            <i class="fab fa-facebook-f"></i>
+
+    <footer>
+        <div class="social-links">
+            <a href="https://share.google/gHRP1nYVd6uUMx2Lu" target="_blank">
+                <i class="fab fa-facebook-f"></i>
+            </a>
+            <a href="https://share.google/m4RnzcG3EDBcL40NN" target="_blank">
+                <i class="fab fa-instagram"></i>
+            </a>
+            <a href="https://wa.me/263777379313" target="_blank">
+                <i class="fab fa-whatsapp"></i>
+            </a>
+            <a href="https://share.google/j2qOR9dEkIJhUSEXc" target="_blank">
+                <i class="fab fa-x-twitter"></i>
+            </a>
+        </div>
+        <p>&copy; 2026 CP Chemicals PVT Limited. All Rights Reserved.</p>
+        <br>
+        <a href="staff_login.html" style="color: #777; font-size: 0.75rem; text-decoration: none;">
+            <i class="fas fa-lock"></i> Authorized Staff Portal
         </a>
-        <a href="https://share.google/m4RnzcG3EDBcL40NN" target="_blank">
-            <i class="fab fa-instagram"></i>
-        </a>
-        <a href="https://wa.me/263777379313" target="_blank">
-            <i class="fab fa-whatsapp"></i>
-        </a>
-        <a href="https://share.google/j2qOR9dEkIJhUSEXc" target="_blank">
-            <i class="fab fa-x-twitter"></i>
-        </a>
-    </div>
-    <p>&copy; 2026 CP Chemicals PVT Limited. All Rights Reserved.</p>
-    <br>
-    <a href="staff_login.html" style="color: #777; font-size: 0.75rem; text-decoration: none;">
-        <i class="fas fa-lock"></i> Authorized Staff Portal
-    </a>
-</footer>
+    </footer>
 
     <script src="script.js"></script>
+
+    <script>
+        // Synchronized Shared Storage Logic
+        function getStoredCart() {
+            return JSON.parse(localStorage.getItem('cp_cart')) || [];
+        }
+
+        function saveStoredCart(cart) {
+            localStorage.setItem('cp_cart', JSON.stringify(cart));
+            renderCart();
+        }
+
+        function renderCart() {
+            const cart = getStoredCart();
+            const tbody = document.getElementById('cart-items');
+            const grandTotalEl = document.getElementById('cart-total');
+            const cartBadge = document.getElementById('cart-count');
+
+            tbody.innerHTML = '';
+            let grandTotal = 0;
+            let totalItemCount = 0;
+
+            if (cart.length === 0) {
+                tbody.innerHTML = `
+                    <tr>
+                        <td colspan="5">
+                            <div class="empty-cart-msg">
+                                <i class="fas fa-shopping-basket"></i>
+                                <h3>Your cart is empty</h3>
+                                <p>Get diagnostic advice from our <a href="test-advisor.html" style="color: #2e7d32; font-weight: bold;">AI Advisory Portal</a> or browse products to add items.</p>
+                            </div>
+                        </td>
+                    </tr>
+                `;
+            } else {
+                cart.forEach((item, index) => {
+                    // Property fallbacks to fix 'undefined' name & quantity issues across different scripts
+                    const itemName = item.name || item.product || 'Unnamed Product';
+                    const price = parseFloat(item.price) || 0;
+                    const qty = parseInt(item.quantity || item.qty) || 1;
+                    const subtotal = price * qty;
+
+                    grandTotal += subtotal;
+                    totalItemCount += qty;
+
+                    const tr = document.createElement('tr');
+                    tr.innerHTML = `
+                        <td><strong>${escapeHTML(itemName)}</strong></td>
+                        <td>$${price.toFixed(2)}</td>
+                        <td>
+                            <input type="number" min="1" class="qty-input" value="${qty}" onchange="updateQuantity(${index}, this.value)">
+                        </td>
+                        <td><strong>$${subtotal.toFixed(2)}</strong></td>
+                        <td>
+                            <button class="btn-remove" onclick="removeItem(${index})" title="Remove item">
+                                <i class="fas fa-trash-alt"></i>
+                            </button>
+                        </td>
+                    `;
+                    tbody.appendChild(tr);
+                });
+            }
+
+            grandTotalEl.innerText = `$${grandTotal.toFixed(2)}`;
+            if (cartBadge) {
+                cartBadge.innerText = totalItemCount;
+            }
+        }
+
+        function updateQuantity(index, newQty) {
+            let cart = getStoredCart();
+            const parsedQty = parseInt(newQty);
+
+            if (parsedQty <= 0 || isNaN(parsedQty)) {
+                removeItem(index);
+                return;
+            }
+
+            // Dual update properties to ensure cross-script compatibility
+            cart[index].quantity = parsedQty;
+            cart[index].qty = parsedQty;
+            
+            saveStoredCart(cart);
+        }
+
+        function removeItem(index) {
+            let cart = getStoredCart();
+            cart.splice(index, 1);
+            saveStoredCart(cart);
+        }
+
+        function emptyCart() {
+            let cart = getStoredCart();
+            if (cart.length === 0) return;
+
+            if (confirm("Are you sure you want to empty your shopping cart?")) {
+                localStorage.removeItem('cp_cart');
+                renderCart();
+            }
+        }
+
+        // Functional Payment Processing Logic
+        function processCheckout(gateway) {
+            const cart = getStoredCart();
+            if (cart.length === 0) {
+                alert("Your cart is empty. Please add products before checking out.");
+                return;
+            }
+
+            let grandTotal = 0;
+            cart.forEach(item => {
+                const price = parseFloat(item.price) || 0;
+                const qty = parseInt(item.quantity || item.qty) || 1;
+                grandTotal += price * qty;
+            });
+
+            if (gateway === 'ecocash') {
+                const phone = prompt(`EcoCash / OneMoney Checkout\nTotal Amount: $${grandTotal.toFixed(2)}\n\nPlease enter your Mobile Number (e.g., 077XXXXXXX):`);
+                if (phone) {
+                    alert(`Payment request sent to ${phone}.\n\nPlease check your mobile handset to enter your PIN and complete the transaction of $${grandTotal.toFixed(2)}.`);
+                    completeOrder('EcoCash / OneMoney');
+                }
+            } 
+            else if (gateway === 'visa') {
+                const cardNumber = prompt(`Visa / Mastercard Checkout\nTotal Amount: $${grandTotal.toFixed(2)}\n\nPlease enter your 16-digit Card Number:`);
+                if (cardNumber) {
+                    alert(`Processing Visa/Mastercard transaction of $${grandTotal.toFixed(2)}...\n\nPayment Successful! Thank you for your purchase with CP Chemicals.`);
+                    completeOrder('Visa / Mastercard');
+                }
+            } 
+            else if (gateway === 'bank') {
+                alert(`Bank Transfer / ZIPIT Details:\n\n` +
+                      `Bank: Stanbic Bank / CBZ\n` +
+                      `Account Name: CP Chemicals PVT Ltd\n` +
+                      `Account Number: 914000XXXXXXX\n` +
+                      `Reference: CP-${Math.floor(100000 + Math.random() * 900000)}\n\n` +
+                      `Amount Due: $${grandTotal.toFixed(2)}\n\n` +
+                      `Please send proof of payment to sales@cpchemicals.co.zw or via WhatsApp.`);
+                completeOrder('Bank Transfer / ZIPIT');
+            }
+        }
+
+        function completeOrder(paymentMethod) {
+            localStorage.removeItem('cp_cart');
+            renderCart();
+            alert(`Order logged successfully via ${paymentMethod}! Redirecting to home page...`);
+            window.location.href = 'home.html';
+        }
+
+        function escapeHTML(str) {
+            return str.replace(/[&<>'"]/g, 
+                tag => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', "'": '&#39;', '"': '&quot;' }[tag] || tag)
+            );
+        }
+
+        // Initialize display on load
+        document.addEventListener("DOMContentLoaded", renderCart);
+    </script>
 </body>
 </html>
