@@ -37,18 +37,37 @@ const agriData = {
 
 let currentIndices = { tips: 0, weed: 0, calibrate: 0 };
 
-/**
- * GLOBAL CART INITIALIZATION
- * This line is critical: it reads the saved data the moment the script loads.
- */
-let cart = JSON.parse(localStorage.getItem('CP_CART')) || [];
+// Utility: HTML Escaping to prevent Script Injection / XSS
+function escapeHTML(str) {
+    return String(str || '').replace(/[&<>'"]/g, 
+        tag => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', "'": '&#39;', '"': '&quot;' }[tag])
+    );
+}
+
+// Utility: Helper Promise for FileReader
+function readFileAsDataURL(file) {
+    return new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onload = () => resolve(reader.result);
+        reader.onerror = (err) => reject(err);
+        reader.readAsDataURL(file);
+    });
+}
+
+function getCartFromStorage() {
+    const raw = localStorage.getItem('CP_CART') || localStorage.getItem('cp_cart');
+    return raw ? JSON.parse(raw) : [];
+}
+
+let cart = getCartFromStorage();
 
 // ==========================================
 // 2. SHOPPING CART & CHECKOUT LOGIC
 // ==========================================
 
 function updateCartCount() {
-    const totalItems = cart.reduce((sum, item) => sum + item.qty, 0);
+    cart = getCartFromStorage();
+    const totalItems = cart.reduce((sum, item) => sum + (parseInt(item.qty || item.quantity) || 1), 0);
     const countElement = document.getElementById('cart-count');
     if (countElement) {
         countElement.innerText = totalItems;
@@ -79,6 +98,7 @@ function addToCart(name, price, qtyInputId) {
     }
 
     localStorage.setItem('CP_CART', JSON.stringify(cart));
+    localStorage.setItem('cp_cart', JSON.stringify(cart));
     updateCartCount();
     
     if (document.getElementById('agritalk-cart-items')) {
@@ -94,6 +114,7 @@ function loadCartPage() {
     const totalElement = document.getElementById('cart-total');
     if (!cartTable) return; 
 
+    cart = getCartFromStorage();
     cartTable.innerHTML = ''; 
     let grandTotal = 0;
 
@@ -101,13 +122,15 @@ function loadCartPage() {
         cartTable.innerHTML = '<tr><td colspan="5" style="text-align:center; padding:20px;">Your cart is empty. Start shopping on the Products page!</td></tr>';
     } else {
         cart.forEach((item, index) => {
-            grandTotal += item.subtotal; 
+            const itemQty = item.qty || item.quantity || 1;
+            const subtotal = item.subtotal || (item.price * itemQty);
+            grandTotal += subtotal; 
             cartTable.innerHTML += `
                 <tr>
-                    <td>${item.name}</td>
-                    <td>$${item.price.toFixed(2)}</td>
-                    <td>${item.qty}</td>
-                    <td><b>$${item.subtotal.toFixed(2)}</b></td>
+                    <td>${escapeHTML(item.name)}</td>
+                    <td>$${parseFloat(item.price).toFixed(2)}</td>
+                    <td>${itemQty}</td>
+                    <td><b>$${parseFloat(subtotal).toFixed(2)}</b></td>
                     <td><button onclick="removeItem(${index})" class="btn-shop" style="background:red; border:none; padding: 5px 10px; cursor:pointer;">Remove</button></td>
                 </tr>`;
         });
@@ -118,17 +141,17 @@ function loadCartPage() {
 function removeItem(index) {
     cart.splice(index, 1); 
     localStorage.setItem('CP_CART', JSON.stringify(cart)); 
+    localStorage.setItem('cp_cart', JSON.stringify(cart)); 
     loadCartPage(); 
     updateCartCount(); 
 }
 
 function emptyCart() {
     if (confirm("Are you sure you want to clear your entire shopping cart?")) {
-        // Deep Clean Storage
         localStorage.removeItem('CP_CART');
+        localStorage.removeItem('cp_cart');
         cart = []; 
 
-        // Manual UI Clear
         const cartTableBody = document.querySelector('#cart-items-body') || document.querySelector('tbody');
         if (cartTableBody) {
             cartTableBody.innerHTML = '<tr><td colspan="5" style="text-align:center; padding:30px;">Cart is empty.</td></tr>';
@@ -147,6 +170,7 @@ function emptyCart() {
 }
 
 function processCheckout(method) {
+    cart = getCartFromStorage();
     if (cart.length === 0) {
         alert("Your cart is empty! Add products first.");
         return;
@@ -170,10 +194,11 @@ function processCheckout(method) {
 
 function completeOrder() {
     localStorage.removeItem('CP_CART');
+    localStorage.removeItem('cp_cart');
     cart = []; 
     updateCartCount();
     alert("Order recorded in our system. Thank you for choosing CP Chemicals.");
-    window.location.href = "index.html";
+    window.location.href = "home.html";
 }
 
 // ==========================================
@@ -188,9 +213,9 @@ function loadBranches() {
     branches.forEach((branch) => {
         grid.innerHTML += `
             <div class="card">
-                <h3>${branch.name}</h3>
-                <p><i class="fas fa-map-marker-alt"></i> ${branch.location}</p>
-                <p><i class="fas fa-user-tie"></i> Agronomist: ${branch.agronomist}</p>
+                <h3>${escapeHTML(branch.name)}</h3>
+                <p><i class="fas fa-map-marker-alt"></i> ${escapeHTML(branch.location)}</p>
+                <p><i class="fas fa-user-tie"></i> Agronomist: ${escapeHTML(branch.agronomist)}</p>
                 <div style="display: flex; gap: 10px; margin-top: 15px; justify-content: center;">
                     <button class="btn-shop" onclick="openMap('${branch.mapUrl}')">
                         <i class="fas fa-map-marked-alt"></i> Open Map
@@ -227,6 +252,7 @@ function updateAgriTalkSidebar() {
     
     if (!sidebarItems) return; 
 
+    cart = getCartFromStorage();
     sidebarItems.innerHTML = '';
     let grandTotal = 0;
 
@@ -234,11 +260,13 @@ function updateAgriTalkSidebar() {
         sidebarItems.innerHTML = '<p style="font-size: 0.9rem; color: #666; text-align:center; padding:10px;">Your cart is empty.</p>';
     } else {
         cart.forEach(item => {
-            grandTotal += item.subtotal;
+            const itemQty = item.qty || item.quantity || 1;
+            const subtotal = item.subtotal || (item.price * itemQty);
+            grandTotal += subtotal;
             sidebarItems.innerHTML += `
                 <div style="display: flex; justify-content: space-between; font-size: 0.9rem; margin-bottom: 8px; border-bottom: 1px dashed #eee; padding-bottom: 5px;">
-                    <span><strong>${item.qty}x</strong> ${item.name}</span>
-                    <span style="color: var(--cp-blue);">$${item.subtotal.toFixed(2)}</span>
+                    <span><strong>${itemQty}x</strong> ${escapeHTML(item.name)}</span>
+                    <span style="color: var(--cp-blue);">$${subtotal.toFixed(2)}</span>
                 </div>`;
         });
     }
@@ -279,16 +307,17 @@ async function publishPost() {
 
     let imageData = "";
     if (fileInput && fileInput.files[0]) {
-        const reader = new FileReader();
-        imageData = await new Promise(r => { 
-            reader.onload = e => r(e.target.result); 
-            reader.readAsDataURL(fileInput.files[0]); 
-        });
+        try {
+            imageData = await readFileAsDataURL(fileInput.files[0]);
+        } catch (err) {
+            alert("Error parsing image file.");
+            return;
+        }
     }
 
     const newPost = {
-        title: titleInput.value,
-        content: contentInput.value,
+        title: escapeHTML(titleInput.value.trim()),
+        content: escapeHTML(contentInput.value.trim()),
         image: imageData,
         date: new Date().toLocaleDateString()
     };
@@ -305,7 +334,7 @@ async function publishPost() {
         
         if (typeof manageStaffPosts === "function") manageStaffPosts();
     } catch (e) {
-        alert("Storage error. The image might be too large.");
+        alert("Storage limit reached! Please use a smaller image file.");
     }
 }
 
@@ -326,18 +355,19 @@ function loadBlogPosts() {
         blogHTML += `
             <div class="blog-entry" style="border-bottom: 2px solid #eee; margin-bottom: 20px; padding-bottom: 10px;">
                 <h4>${post.title}</h4>
-                <small>${post.date}</small>
+                <small>${escapeHTML(post.date)}</small>
                 ${imgTag}
                 <p>${post.content}</p>
             </div>`;
     });
     display.innerHTML = blogHTML;
 }
+
 function proceedToCheckout() {
+    cart = getCartFromStorage();
     if (cart.length === 0) {
         alert("Your cart is empty! Please add some products before checking out.");
     } else {
-        // Redirect to your main shop/cart page where the payment buttons are
         window.location.href = "shop_online.html";
     }
 }
@@ -358,30 +388,42 @@ async function submitQuery() {
     const fileInput = form.querySelector('input[type="file"]');
     let imageData = "";
     if (fileInput?.files[0]) {
-        const reader = new FileReader();
-        imageData = await new Promise(r => { reader.onload = e => r(e.target.result); reader.readAsDataURL(fileInput.files[0]); });
+        try {
+            imageData = await readFileAsDataURL(fileInput.files[0]);
+        } catch (e) {
+            alert("Unable to process the attachment image.");
+            btn.innerHTML = 'Submit Case to Agronomy Dept';
+            btn.disabled = false;
+            return;
+        }
     }
 
     const newQuery = {
-        name: document.getElementById('farmerName').value || "Anonymous",
-        branch: document.getElementById('branchSelect').value,
-        message: messageVal,
+        name: escapeHTML(document.getElementById('farmerName').value.trim() || "Anonymous"),
+        branch: escapeHTML(document.getElementById('branchSelect').value),
+        message: escapeHTML(messageVal),
         image: imageData,
         date: new Date().toLocaleString(),
         status: "New"
     };
 
-    let allQueries = JSON.parse(localStorage.getItem('CP_QUERIES')) || [];
-    allQueries.unshift(newQuery);
-    localStorage.setItem('CP_QUERIES', JSON.stringify(allQueries));
+    try {
+        let allQueries = JSON.parse(localStorage.getItem('CP_QUERIES')) || [];
+        allQueries.unshift(newQuery);
+        localStorage.setItem('CP_QUERIES', JSON.stringify(allQueries));
 
-    setTimeout(() => {
-        alert("Query sent successfully!");
-        form.reset();
+        setTimeout(() => {
+            alert("Query sent successfully!");
+            form.reset();
+            btn.innerHTML = 'Submit Case to Agronomy Dept';
+            btn.disabled = false;
+            if (document.getElementById('incoming-queries-area')) loadFarmerQueries();
+        }, 800);
+    } catch (e) {
+        alert("Storage error. The image file may be too large to save locally.");
         btn.innerHTML = 'Submit Case to Agronomy Dept';
         btn.disabled = false;
-        if (document.getElementById('incoming-queries-area')) loadFarmerQueries();
-    }, 1000);
+    }
 }
 
 function loadFarmerQueries() {
@@ -404,15 +446,15 @@ function loadFarmerQueries() {
         html += `
             <div class="query-card" style="display:flex; align-items:center; background:#fff; border:1px solid #ddd; padding:20px; margin-bottom:15px; border-radius:8px;">
                 <div style="flex: 1;">
-                    <span style="font-size:0.75rem; background:#f0f0f0; padding:2px 8px; border-radius:4px; font-weight:bold;">${q.status}</span>
+                    <span style="font-size:0.75rem; background:${q.status === 'Resolved' ? '#28a745' : '#ffc107'}; color:${q.status === 'Resolved' ? '#fff' : '#000'}; padding:2px 8px; border-radius:4px; font-weight:bold;">${escapeHTML(q.status)}</span>
                     <h4>${q.name} <small>(${q.branch})</small></h4>
                     <p>${q.message}</p>
-                    <small>${q.date}</small>
+                    <small>${escapeHTML(q.date)}</small>
                 </div>
                 ${img}
                 <div style="display:flex; flex-direction:column; gap:8px;">
-                    <button onclick="resolveQuery(${index})" style="background:#28a745; color:white; border:none; padding:8px; border-radius:4px; cursor:pointer;">Resolve</button>
-                    <button onclick="deleteQuery(${index})" style="background:#dc3545; color:white; border:none; padding:8px; border-radius:4px; cursor:pointer;">Delete</button>
+                    <button onclick="resolveQuery(${index})" style="background:#28a745; color:white; border:none; padding:8px 12px; border-radius:4px; cursor:pointer;">Resolve</button>
+                    <button onclick="deleteQuery(${index})" style="background:#dc3545; color:white; border:none; padding:8px 12px; border-radius:4px; cursor:pointer;">Delete</button>
                 </div>
             </div>`;
     });
@@ -420,15 +462,17 @@ function loadFarmerQueries() {
 }
 
 function resolveQuery(i) {
-    let q = JSON.parse(localStorage.getItem('CP_QUERIES'));
-    q[i].status = "Resolved";
-    localStorage.setItem('CP_QUERIES', JSON.stringify(q));
-    loadFarmerQueries();
+    let q = JSON.parse(localStorage.getItem('CP_QUERIES')) || [];
+    if (q[i]) {
+        q[i].status = "Resolved";
+        localStorage.setItem('CP_QUERIES', JSON.stringify(q));
+        loadFarmerQueries();
+    }
 }
 
 function deleteQuery(i) {
-    if (confirm("Delete this inquiry?")) {
-        let q = JSON.parse(localStorage.getItem('CP_QUERIES'));
+    if (confirm("Delete this inquiry permanently?")) {
+        let q = JSON.parse(localStorage.getItem('CP_QUERIES')) || [];
         q.splice(i, 1);
         localStorage.setItem('CP_QUERIES', JSON.stringify(q));
         loadFarmerQueries();
@@ -441,20 +485,24 @@ function manageStaffPosts() {
     const posts = JSON.parse(localStorage.getItem('CP_BLOGS')) || [];
     
     if (posts.length === 0) {
-        container.innerHTML = "<p>No posts available.</p>";
+        container.innerHTML = "<p style='color:#777;'>No posts available in storage.</p>";
         return;
     }
 
-    let html = "<table style='width:100%;'>";
+    let html = "<table style='width:100%; border-collapse: collapse;'>";
     posts.forEach((p, i) => {
-        html += `<tr><td>${p.title}</td><td style='text-align:right;'><button onclick='deletePost(${i})' style='background:red; color:white; border:none; padding:4px 8px; border-radius:4px; cursor:pointer;'>Remove</button></td></tr>`;
+        html += `
+            <tr style="border-bottom: 1px solid #eee;">
+                <td style="padding: 10px 0;"><strong>${p.title}</strong> <br><small style="color:#888;">${p.date}</small></td>
+                <td style='text-align:right;'><button onclick='deletePost(${i})' style='background:#dc3545; color:white; border:none; padding:6px 12px; border-radius:4px; cursor:pointer;'>Remove</button></td>
+            </tr>`;
     });
     container.innerHTML = html + "</table>";
 }
 
 function deletePost(i) {
-    if (confirm("Delete this post?")) {
-        let p = JSON.parse(localStorage.getItem('CP_BLOGS'));
+    if (confirm("Delete this post permanently?")) {
+        let p = JSON.parse(localStorage.getItem('CP_BLOGS')) || [];
         p.splice(i, 1);
         localStorage.setItem('CP_BLOGS', JSON.stringify(p));
         manageStaffPosts();
@@ -462,7 +510,7 @@ function deletePost(i) {
 }
 
 // ==========================================
-// 6. INITIALIZATION
+// 6. INITIALIZATION & EVENT SYNC
 // ==========================================
 
 function setupAudio() {
@@ -488,10 +536,8 @@ function setupStars() {
     });
 }
 
-document.addEventListener('DOMContentLoaded', () => {
-    // 1. Sync state with correct Storage Key
-    cart = JSON.parse(localStorage.getItem('CP_CART')) || [];
-    
+function initPage() {
+    cart = getCartFromStorage();
     updateCartCount();
     setupAudio();
 
@@ -506,9 +552,14 @@ document.addEventListener('DOMContentLoaded', () => {
     
     if (document.getElementById('incoming-queries-area')) loadFarmerQueries();
     if (document.getElementById('manage-posts-area')) manageStaffPosts();
+}
 
-    window.addEventListener('click', (event) => {
-        const modal = document.getElementById('mapModal');
-        if (event.target == modal) closeMap();
-    });
+document.addEventListener('DOMContentLoaded', initPage);
+
+window.addEventListener('pageshow', updateCartCount);
+window.addEventListener('storage', updateCartCount);
+
+window.addEventListener('click', (event) => {
+    const modal = document.getElementById('mapModal');
+    if (event.target == modal) closeMap();
 });
