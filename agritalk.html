@@ -39,7 +39,7 @@
             <div class="agri-sidebar-wrapper" style="width: 100% !important;">
                 <div class="agri-sidebar" style="margin-bottom: 20px; width: 100% !important;">
                     <h2 style="margin-top: 0; color: #2e7d32;">Agri-Talk</h2> 
-                    <button class="tab-btn active" onclick="openAgri('tips')" style="width: 100% !important; margin-bottom: 10px;">Farming Tips</button>
+                    <button class="tab-btn active" onclick="openAgri('tips', event)" style="width: 100% !important; margin-bottom: 10px;">Farming Tips</button>
                     
                     <a href="news.html" style="text-decoration: none;">
                         <button class="tab-btn" style="width: 100% !important; margin-bottom: 10px; background-color: #1a237e; color: white;">
@@ -47,8 +47,8 @@
                         </button>
                     </a>
 
-                    <button class="tab-btn" onclick="openAgri('weed')" style="width: 100% !important; margin-bottom: 10px;">Weed Identification</button>
-                    <button class="tab-btn" onclick="openAgri('calibrate')" style="width: 100% !important; margin-bottom: 10px;">Calibration Guide</button>
+                    <button class="tab-btn" onclick="openAgri('weed', event)" style="width: 100% !important; margin-bottom: 10px;">Weed Identification</button>
+                    <button class="tab-btn" onclick="openAgri('calibrate', event)" style="width: 100% !important; margin-bottom: 10px;">Calibration Guide</button>
                     
                     <a href="test-advisor.html" style="text-decoration: none;">
                         <button class="tab-btn" style="width: 100% !important; background-color: #2e7d32; color: white; border: 2px solid #1b5e20;">
@@ -105,18 +105,26 @@
                         </select>
                         
                         <textarea id="queryMessage" placeholder="Describe your crop or livestock issue in detail..." 
-                                  rows="5" style="width:100%; margin-bottom:10px; padding:10px; border:1px solid #ddd; border-radius:5px;"></textarea>
+                                  rows="5" style="width:100%; margin-bottom:10px; padding:10px; border:1px solid #ddd; border-radius:5px;" required></textarea>
                         
                         <label style="display:block; margin-bottom:10px; font-weight:bold;">
                             <i class="fas fa-paperclip"></i> Attach Photos/Video (Max 10MB):
                         </label>
-                        <input type="file" accept="image/*,video/*" style="margin-bottom:20px; display:block;">
+                        <input type="file" id="mediaUpload" accept="image/*,video/*" style="margin-bottom:20px; display:block;">
                         
                         <button type="button" class="btn-shop" onclick="submitQuery()" style="width:100%; padding:15px; font-size:1.1rem;">
                             Submit Case to Agronomy Dept
                         </button>
                     </div>
                 </form>
+
+                <!-- Dynamic Live Feedback & Agronomist Responses Section -->
+                <div id="farmerCasesContainer" style="margin-top: 30px; border-top: 2px dashed #ddd; padding-top: 20px;">
+                    <h4 style="color: #1a237e; margin-bottom: 15px;"><i class="fas fa-comments"></i> Your Submitted Cases & Responses</h4>
+                    <div id="casesList" style="display: flex; flex-direction: column; gap: 15px;">
+                        <p style="font-size: 0.9rem; color: #777;">No previous cases submitted in this session.</p>
+                    </div>
+                </div>
             </section>
         </div>
     </section>
@@ -149,22 +157,133 @@
     </a>
 </footer>
 
-    <script>
-        // Keeping the existing tab logic for other sections
-        const agriContent = {
-            tips: `<h3>Farming Tips</h3><p>Ensure you check soil moisture levels before applying top-dressing fertilizer...</p>`,
-            weed: `<h3>Weed Identification</h3><p>Common weeds in Zimbabwe include Blackjack and Pigweed. Use CP-Glyphosate for clearing...</p>`,
-            calibrate: `<h3>Calibration Guide</h3><p>Maintain a constant walking speed to ensure uniform chemical application...</p>`
+   <script>
+        // Expanded Rotating Content Arrays for Interactive Clicks
+        const agriContentLists = {
+            tips: [
+                `<h3>Farming Tips (1/3): Soil Management & Nutrition</h3>
+                 <p>Ensure you check soil moisture and pH levels before applying top-dressing fertilizer. Basal fertilizer should be placed near the root zone at planting to prevent leaching during early heavy rains.</p>`,
+                `<h3>Farming Tips (2/3): Pest Control & Crop Protection</h3>
+                 <p>Rotate crop protection chemicals with different modes of action (MOA) to avoid pest resistance. Inspect under leaf surfaces early in the morning for Fall Armyworm and Red Spider Mites.</p>`,
+                `<h3>Farming Tips (3/3): Irrigation & Water Efficiency</h3>
+                 <p>Irrigate early in the morning or late evening to cut evaporative loss. Monitor soil moisture down to 30cm to ensure effective root-zone saturation without waterlogging.</p>`
+            ],
+            weed: [
+                `<h3>Weed Identification (1/3): Common Broadleaf Weeds</h3>
+                 <p><strong>Blackjack (Bidens pilosa) & Pigweed (Amaranthus):</strong> Highly competitive broadleaf weeds in Zimbabwean maize and tobacco fields. Apply <em>CP-Glyphosate 480SL</em> pre-planting or selective broadleaf herbicides early post-emergence.</p>`,
+                `<h3>Weed Identification (2/3): Problem Grasses</h3>
+                 <p><strong>Couch Grass (Cynodon dactylon) & Shamva Grass:</strong> Perennial grasses with deep stolons and rhizomes. Require systemic post-emergence herbicide applications like <em>CP-Fluazifop-p-butyl</em> in broadleaf crops.</p>`,
+                `<h3>Weed Identification (3/3): Sedges & Parasitic Weeds</h3>
+                 <p><strong>Yellow Nutsedge (Cyperus esculentus) & Witchweed (Striga):</strong> Sedges thrive in wet soils and propagate via tubers. Striga attaches to cereal roots. Use specialized soil-applied pre-emergence herbicides and crop rotation.</p>`
+            ],
+            calibrate: [
+                `<h3>Calibration Guide (1/3): Knapsack Sprayer Basics</h3>
+                 <p>Maintain a constant walking speed (approx. 1 meter per second) and maintain steady pressure at 2–3 bar to ensure uniform chemical coverage across the target swath width.</p>`,
+                `<h3>Calibration Guide (2/3): Nozzle Selection & Flow Rate</h3>
+                 <p>Use yellow flat-fan nozzles for herbicides and hollow-cone nozzles for fungicides/insecticides. Catch output in a measuring cylinder for 1 minute; replace nozzles showing over 10% variation from nominal discharge.</p>`,
+                `<h3>Calibration Guide (3/3): Dosage & Water Volume Math</h3>
+                 <p>Calculate required chemical dosage per 15L or 20L tank: <code>(Recommended Rate/Ha) ÷ (Water Volume/Ha) × Tank Capacity</code>. Never estimate chemical volume by eye.</p>`
+            ]
         };
 
-        function openAgri(topic) {
+        // Track index position for rotation on click
+        const topicIndices = { tips: 0, weed: 0, calibrate: 0 };
+
+        function openAgri(topic, evt) {
             const display = document.getElementById('agri-display');
-            display.innerHTML = agriContent[topic];
+            if (agriContentLists[topic]) {
+                const list = agriContentLists[topic];
+                const currentIndex = topicIndices[topic];
+                display.innerHTML = list[currentIndex];
+                topicIndices[topic] = (currentIndex + 1) % list.length; // Cycle through available tips
+            }
             
-            // Remove active class from all and add to current
-            document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
-            event.currentTarget.classList.add('active');
+            // Remove active class from tabs and set active on clicked tab
+            document.querySelectorAll('.agri-sidebar .tab-btn').forEach(btn => btn.classList.remove('active'));
+            if (evt && evt.currentTarget) {
+                evt.currentTarget.classList.add('active');
+            }
         }
+
+        // Live Agronomy Dashboard Integration Logic
+        function submitQuery() {
+            const farmerName = document.getElementById('farmerName').value.trim();
+            const branchSelect = document.getElementById('branchSelect').value;
+            const queryMessage = document.getElementById('queryMessage').value.trim();
+            const mediaUpload = document.getElementById('mediaUpload').files[0];
+
+            if (!farmerName || !queryMessage) {
+                alert('Please enter your name and describe your agricultural issue.');
+                return;
+            }
+
+            const processSubmission = (imageData = null) => {
+                const newQuery = {
+                    id: 'CASE-' + Date.now(),
+                    farmerName: farmerName,
+                    branch: branchSelect,
+                    message: queryMessage,
+                    image: imageData,
+                    timestamp: new Date().toLocaleString(),
+                    status: 'Pending Review',
+                    replies: []
+                };
+
+                // Retrieve existing queries, append, and save back to shared storage
+                const existingQueries = JSON.parse(localStorage.getItem('agronomyQueries')) || [];
+                existingQueries.unshift(newQuery);
+                localStorage.setItem('agronomyQueries', JSON.stringify(existingQueries));
+
+                alert('Your case has been submitted successfully to the Agronomy Department!');
+                document.getElementById('agronomyForm').reset();
+                loadFarmerCases();
+            };
+
+            // Read media file if attached
+            if (mediaUpload) {
+                const reader = new FileReader();
+                reader.onload = function (e) {
+                    processSubmission(e.target.result);
+                };
+                reader.readAsDataURL(mediaUpload);
+            } else {
+                processSubmission(null);
+            }
+        }
+
+        // Load submitted cases and agronomist replies for the farmer
+        function loadFarmerCases() {
+            const casesList = document.getElementById('casesList');
+            const existingQueries = JSON.parse(localStorage.getItem('agronomyQueries')) || [];
+
+            if (existingQueries.length === 0) {
+                casesList.innerHTML = '<p style="font-size: 0.9rem; color: #777;">No previous cases submitted in this session.</p>';
+                return;
+            }
+
+            casesList.innerHTML = existingQueries.map(c => `
+                <div style="border: 1px solid #e0e0e0; background: #fafafa; border-radius: 6px; padding: 15px;">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+                        <strong style="color: #2e7d32;">${c.farmerName} (${c.branch})</strong>
+                        <span style="font-size: 0.75rem; background: ${c.status === 'Resolved' ? '#e8f5e9' : '#fff3e0'}; color: ${c.status === 'Resolved' ? '#2e7d32' : '#e65100'}; padding: 3px 8px; border-radius: 4px; font-weight: bold;">
+                            ${c.status}
+                        </span>
+                    </div>
+                    <p style="margin: 5px 0; font-size: 0.95rem; color: #333;">${c.message}</p>${c.image ? `<img src="${c.image}" style="max-width: 150px; max-height: 150px; border-radius: 4px; margin-top: 8px; border: 1px solid #ccc; display: block;">` : ''}
+                    <small style="color: #888; display: block; margin-top: 6px;">Submitted: ${c.timestamp}</small>${c.replies && c.replies.length > 0 ? `
+                        <div style="margin-top: 12px; padding: 10px; background: #e8eaf6; border-left: 3px solid #1a237e; border-radius: 0 4px 4px 0;">
+                            <strong style="color: #1a237e; font-size: 0.85rem;"><i class="fas fa-user-md"></i> Agronomist Response:</strong>
+                            ${c.replies.map(r => `<p style="margin: 4px 0 0 0; font-size: 0.9rem; color: #1a237e;">${r.text} <em style="font-size: 0.75rem; color: #555;">(${r.time})</em></p>`).join('')}
+                        </div>
+                    ` : ''}
+                </div>
+            `).join('');
+        }
+
+        // Initialize state on page load
+        document.addEventListener('DOMContentLoaded', () => {
+            loadFarmerCases();
+        });
     </script>
     <script src="script.js"></script>
 </body>
