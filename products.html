@@ -99,7 +99,7 @@
                         <td>50kg Bag</td>
                         <td>$35.00</td>
                         <td><input type="number" id="qty-1" value="1" min="1" class="qty-input"></td>
-                        <td><button class="btn-shop" onclick="addToCart('CP Maize Booster', 35.00, 'qty-1')">Add</button></td>
+                        <td><button class="btn-shop" onclick="addToCart('CP Maize Booster', 35.00, 'qty-1', this)">Add</button></td>
                     </tr>
 
                     <tr>
@@ -109,7 +109,7 @@
                         <td>1 Litre</td>
                         <td>$12.50</td>
                         <td><input type="number" id="qty-2" value="1" min="1" class="qty-input"></td>
-                        <td><button class="btn-shop" onclick="addToCart('Termi-Kill 500', 12.50, 'qty-2')">Add</button></td>
+                        <td><button class="btn-shop" onclick="addToCart('Termi-Kill 500', 12.50, 'qty-2', this)">Add</button></td>
                     </tr>
 
                     <tr>
@@ -119,7 +119,7 @@
                         <td>5 Litre</td>
                         <td>$45.00</td>
                         <td><input type="number" id="qty-3" value="1" min="1" class="qty-input"></td>
-                        <td><button class="btn-shop" onclick="addToCart('CP-Glyphosate Max', 45.00, 'qty-3')">Add</button></td>
+                        <td><button class="btn-shop" onclick="addToCart('CP-Glyphosate Max', 45.00, 'qty-3', this)">Add</button></td>
                     </tr>
 
                     <tr>
@@ -129,7 +129,7 @@
                         <td>5 Litre</td>
                         <td>$55.00</td>
                         <td><input type="number" id="qty-4" value="1" min="1" class="qty-input"></td>
-                        <td><button class="btn-shop" onclick="addToCart('Livestock Dip', 55.00, 'qty-4')">Add</button></td>
+                        <td><button class="btn-shop" onclick="addToCart('Livestock Dip', 55.00, 'qty-4', this)">Add</button></td>
                     </tr>
 
                     <tr>
@@ -139,7 +139,7 @@
                         <td>1 Litre</td>
                         <td>$8.00</td>
                         <td><input type="number" id="qty-5" value="1" min="1" class="qty-input"></td>
-                        <td><button class="btn-shop" onclick="addToCart('Veggie Master', 8.00, 'qty-5')">Add</button></td>
+                        <td><button class="btn-shop" onclick="addToCart('Veggie Master', 8.00, 'qty-5', this)">Add</button></td>
                     </tr>
 
                     <tr>
@@ -149,7 +149,7 @@
                         <td>10kg Bag</td>
                         <td>$28.00</td>
                         <td><input type="number" id="qty-6" value="1" min="1" class="qty-input"></td>
-                        <td><button class="btn-shop" onclick="addToCart('CP Maize Seed (SC719)', 28.00, 'qty-6')">Add</button></td>
+                        <td><button class="btn-shop" onclick="addToCart('CP Maize Seed (SC719)', 28.00, 'qty-6', this)">Add</button></td>
                     </tr>
 
                     <tr>
@@ -159,7 +159,7 @@
                         <td>Each</td>
                         <td>$22.00</td>
                         <td><input type="number" id="qty-7" value="1" min="1" class="qty-input"></td>
-                        <td><button class="btn-shop" onclick="addToCart('CP Knapsack Sprayer', 22.00, 'qty-7')">Add</button></td>
+                        <td><button class="btn-shop" onclick="addToCart('CP Knapsack Sprayer', 22.00, 'qty-7', this)">Add</button></td>
                     </tr>
 
                     <tr>
@@ -169,7 +169,7 @@
                         <td>500g</td>
                         <td>$10.00</td>
                         <td><input type="number" id="qty-8" value="1" min="1" class="qty-input"></td>
-                        <td><button class="btn-shop" onclick="addToCart('Copper Oxychloride', 10.00, 'qty-8')">Add</button></td>
+                        <td><button class="btn-shop" onclick="addToCart('Copper Oxychloride', 10.00, 'qty-8', this)">Add</button></td>
                     </tr>
 
                     <tr>
@@ -179,7 +179,7 @@
                         <td>Pair</td>
                         <td>$15.00</td>
                         <td><input type="number" id="qty-9" value="1" min="1" class="qty-input"></td>
-                        <td><button class="btn-shop" onclick="addToCart('Protective Gumboots', 15.00, 'qty-9')">Add</button></td>
+                        <td><button class="btn-shop" onclick="addToCart('Protective Gumboots', 15.00, 'qty-9', this)">Add</button></td>
                     </tr>
 
                     <tr>
@@ -189,7 +189,188 @@
                         <td>100g</td>
                         <td>$3.50</td>
                         <td><input type="number" id="qty-10" value="1" min="1" class="qty-input"></td>
-                        <td><button class="btn-shop" onclick="addToCart('Rat-Ban Pellets', 3.50, 'qty-10')">Add</button></td>
+                        <td><button class="btn-shop" onclick="addToCart('Rat-Ban Pellets', 3.50, 'qty-10', this)">Add</button></td>
+                    </tr>
+
+                    <!-- Additional Products Matched from AI Knowledge Base -->
+                    <tr>
+                        <td><img src="https://images.unsplash.com/photo-1589923188900-85dae523342b?w=80" alt="SuperGrass" class="table-img"></td>
+                        <td><b>SuperGrass Herbicide</b><br><small>Effective against broadleaf weeds & grass</small></td>
+                        <td>Herbicide</td>
+                        <td>1 Litre</td>
+                        <td>$15.00</td>
+                        <td><input type="number" id="qty-11" value="1" min="1" class="qty-input"></td>
+                        <td><button class="btn-shop" onclick="addToCart('SuperGrass Herbicide', 15.00, 'qty-11', this)">Add</button></td>
+                    </tr>
+
+                    <tr>
+                        <td><img src="https://images.unsplash.com/photo-1628352081506-83c43123ed6d?w=80" alt="BorerStrike" class="table-img"></td>
+                        <td><b>BorerStrike 20EC</b><br><small>Targets stalk borers & stem chewers</small></td>
+                        <td>Insecticide</td>
+                        <td>1 Litre</td>
+                        <td>$22.50</td>
+                        <td><input type="number" id="qty-12" value="1" min="1" class="qty-input"></td>
+                        <td><button class="btn-shop" onclick="addToCart('BorerStrike 20EC', 22.50, 'qty-12', this)">Add</button></td>
+                    </tr>
+
+                    <tr>
+                        <td><img src="https://images.unsplash.com/photo-1523348837708-15d4a09cfac2?w=80" alt="FungiCure" class="table-img"></td>
+                        <td><b>FungiCure Max</b><br><small>Broad-spectrum systemic fungicide</small></td>
+                        <td>Fungicide</td>
+                        <td>1 Litre</td>
+                        <td>$18.00</td>
+                        <td><input type="number" id="qty-13" value="1" min="1" class="qty-input"></td>
+                        <td><button class="btn-shop" onclick="addToCart('FungiCure Max', 18.00, 'qty-13', this)">Add</button></td>
+                    </tr>
+
+                    <tr>
+                        <td><img src="https://images.unsplash.com/photo-1628352081506-83c43123ed6d?w=80" alt="ArmyGuard" class="table-img"></td>
+                        <td><b>ArmyGuard Pro</b><br><small>Fast-acting contact insecticide for fall armyworm</small></td>
+                        <td>Insecticide</td>
+                        <td>1 Litre</td>
+                        <td>$25.00</td>
+                        <td><input type="number" id="qty-14" value="1" min="1" class="qty-input"></td>
+                        <td><button class="btn-shop" onclick="addToCart('ArmyGuard Pro', 25.00, 'qty-14', this)">Add</button></td>
+                    </tr>
+
+                    <tr>
+                        <td><img src="https://images.unsplash.com/photo-1628352081506-83c43123ed6d?w=80" alt="AphidKill" class="table-img"></td>
+                        <td><b>AphidKill 500</b><br><small>Controls aphids, whiteflies, & sap-suckers</small></td>
+                        <td>Insecticide</td>
+                        <td>500ml</td>
+                        <td>$14.50</td>
+                        <td><input type="number" id="qty-15" value="1" min="1" class="qty-input"></td>
+                        <td><button class="btn-shop" onclick="addToCart('AphidKill 500', 14.50, 'qty-15', this)">Add</button></td>
+                    </tr>
+
+                    <tr>
+                        <td><img src="https://images.unsplash.com/photo-1523348837708-15d4a09cfac2?w=80" alt="BlightShield" class="table-img"></td>
+                        <td><b>BlightShield Copper</b><br><small>Copper-based preventative spray for blights</small></td>
+                        <td>Fungicide</td>
+                        <td>1kg Bag</td>
+                        <td>$20.00</td>
+                        <td><input type="number" id="qty-16" value="1" min="1" class="qty-input"></td>
+                        <td><button class="btn-shop" onclick="addToCart('BlightShield Copper', 20.00, 'qty-16', this)">Add</button></td>
+                    </tr>
+
+                    <tr>
+                        <td><img src="https://images.unsplash.com/photo-1523348837708-15d4a09cfac2?w=80" alt="Tobacco Gold" class="table-img"></td>
+                        <td><b>Tobacco Gold Fungicide</b><br><small>Specialized formulation for tobacco diseases</small></td>
+                        <td>Fungicide</td>
+                        <td>1 Litre</td>
+                        <td>$30.00</td>
+                        <td><input type="number" id="qty-17" value="1" min="1" class="qty-input"></td>
+                        <td><button class="btn-shop" onclick="addToCart('Tobacco Gold Fungicide', 30.00, 'qty-17', this)">Add</button></td>
+                    </tr>
+
+                    <tr>
+                        <td><img src="https://images.unsplash.com/photo-1628352081506-83c43123ed6d?w=80" alt="Cotton Protect" class="table-img"></td>
+                        <td><b>Cotton Protect 360</b><br><small>Combats bollworms & stainers in cotton</small></td>
+                        <td>Insecticide</td>
+                        <td>1 Litre</td>
+                        <td>$27.50</td>
+                        <td><input type="number" id="qty-18" value="1" min="1" class="qty-input"></td>
+                        <td><button class="btn-shop" onclick="addToCart('Cotton Protect 360', 27.50, 'qty-18', this)">Add</button></td>
+                    </tr>
+
+                    <tr>
+                        <td><img src="https://images.unsplash.com/photo-1589923188900-85dae523342b?w=80" alt="WeedClear" class="table-img"></td>
+                        <td><b>WeedClear Selective</b><br><small>Selective post-emergence weed control</small></td>
+                        <td>Herbicide</td>
+                        <td>1 Litre</td>
+                        <td>$16.00</td>
+                        <td><input type="number" id="qty-19" value="1" min="1" class="qty-input"></td>
+                        <td><button class="btn-shop" onclick="addToCart('WeedClear Selective', 16.00, 'qty-19', this)">Add</button></td>
+                    </tr>
+
+                    <tr>
+                        <td><img src="https://images.unsplash.com/photo-1523348837708-15d4a09cfac2?w=80" alt="MildewFree" class="table-img"></td>
+                        <td><b>MildewFree Systemic</b><br><small>Eradicates powdery mildew & white mold</small></td>
+                        <td>Fungicide</td>
+                        <td>500ml</td>
+                        <td>$19.50</td>
+                        <td><input type="number" id="qty-20" value="1" min="1" class="qty-input"></td>
+                        <td><button class="btn-shop" onclick="addToCart('MildewFree Systemic', 19.50, 'qty-20', this)">Add</button></td>
+                    </tr>
+
+                    <tr>
+                        <td><img src="https://images.unsplash.com/photo-1628352081506-83c43123ed6d?w=80" alt="Nematode-X" class="table-img"></td>
+                        <td><b>Nematode-X Soil Drench</b><br><small>Soil nematicide treatment for healthy roots</small></td>
+                        <td>Pest Control</td>
+                        <td>1 Litre</td>
+                        <td>$32.00</td>
+                        <td><input type="number" id="qty-21" value="1" min="1" class="qty-input"></td>
+                        <td><button class="btn-shop" onclick="addToCart('Nematode-X Soil Drench', 32.00, 'qty-21', this)">Add</button></td>
+                    </tr>
+
+                    <tr>
+                        <td><img src="https://images.unsplash.com/photo-1628352081506-83c43123ed6d?w=80" alt="Cutworm Buster" class="table-img"></td>
+                        <td><b>Cutworm Buster</b><br><small>Surface spray for nocturnal cutworm control</small></td>
+                        <td>Insecticide</td>
+                        <td>500ml</td>
+                        <td>$13.00</td>
+                        <td><input type="number" id="qty-22" value="1" min="1" class="qty-input"></td>
+                        <td><button class="btn-shop" onclick="addToCart('Cutworm Buster', 13.00, 'qty-22', this)">Add</button></td>
+                    </tr>
+
+                    <tr>
+                        <td><img src="https://images.unsplash.com/photo-1628352081506-83c43123ed6d?w=80" alt="RedSpider MiteKill" class="table-img"></td>
+                        <td><b>RedSpider MiteKill</b><br><small>Targeted miticide for red spider mites</small></td>
+                        <td>Insecticide</td>
+                        <td>500ml</td>
+                        <td>$21.00</td>
+                        <td><input type="number" id="qty-23" value="1" min="1" class="qty-input"></td>
+                        <td><button class="btn-shop" onclick="addToCart('RedSpider MiteKill', 21.00, 'qty-23', this)">Add</button></td>
+                    </tr>
+
+                    <tr>
+                        <td><img src="https://images.unsplash.com/photo-1523348837708-15d4a09cfac2?w=80" alt="RustStop" class="table-img"></td>
+                        <td><b>RustStop Cereal Spray</b><br><small>Engineered fungicide for wheat & cereal rust</small></td>
+                        <td>Fungicide</td>
+                        <td>1 Litre</td>
+                        <td>$24.00</td>
+                        <td><input type="number" id="qty-24" value="1" min="1" class="qty-input"></td>
+                        <td><button class="btn-shop" onclick="addToCart('RustStop Cereal Spray', 24.00, 'qty-24', this)">Add</button></td>
+                    </tr>
+
+                    <tr>
+                        <td><img src="https://images.unsplash.com/photo-1594751175394-47a7f4571958?w=80" alt="Soybean Boost" class="table-img"></td>
+                        <td><b>Soybean Nodul-Boost</b><br><small>Inoculant & foliar spray for nitrogen fixing</small></td>
+                        <td>Fertilizer</td>
+                        <td>1 Litre</td>
+                        <td>$12.00</td>
+                        <td><input type="number" id="qty-25" value="1" min="1" class="qty-input"></td>
+                        <td><button class="btn-shop" onclick="addToCart('Soybean Nodul-Boost', 12.00, 'qty-25', this)">Add</button></td>
+                    </tr>
+
+                    <tr>
+                        <td><img src="https://images.unsplash.com/photo-1628352081506-83c43123ed6d?w=80" alt="Tomato Fruitworm" class="table-img"></td>
+                        <td><b>Tomato Fruitworm Defense</b><br><small>Protects tomatoes & veggies from fruit borers</small></td>
+                        <td>Insecticide</td>
+                        <td>500ml</td>
+                        <td>$17.50</td>
+                        <td><input type="number" id="qty-26" value="1" min="1" class="qty-input"></td>
+                        <td><button class="btn-shop" onclick="addToCart('Tomato Fruitworm Defense', 17.50, 'qty-26', this)">Add</button></td>
+                    </tr>
+
+                    <tr>
+                        <td><img src="https://images.unsplash.com/photo-1594751175394-47a7f4571958?w=80" alt="NutriGro" class="table-img"></td>
+                        <td><b>NutriGro Folia-Feed</b><br><small>Liquid micro-nutrient booster for fast recovery</small></td>
+                        <td>Fertilizer</td>
+                        <td>1 Litre</td>
+                        <td>$10.00</td>
+                        <td><input type="number" id="qty-27" value="1" min="1" class="qty-input"></td>
+                        <td><button class="btn-shop" onclick="addToCart('NutriGro Folia-Feed', 10.00, 'qty-27', this)">Add</button></td>
+                    </tr>
+
+                    <tr>
+                        <td><img src="https://images.unsplash.com/photo-1589923188900-85dae523342b?w=80" alt="Soil-Clean" class="table-img"></td>
+                        <td><b>Soil-Clean Pre-Emergent</b><br><small>Pre-emergent soil spray to inhibit weed seeds</small></td>
+                        <td>Herbicide</td>
+                        <td>2 Litre</td>
+                        <td>$28.00</td>
+                        <td><input type="number" id="qty-28" value="1" min="1" class="qty-input"></td>
+                        <td><button class="btn-shop" onclick="addToCart('Soil-Clean Pre-Emergent', 28.00, 'qty-28', this)">Add</button></td>
                     </tr>
 
                 </tbody>
@@ -211,14 +392,60 @@
 
     <script src="script.js"></script>
     <script>
-        // Internal script to handle live table filtering
+        // Synchronize cart count when DOM loads
+        document.addEventListener("DOMContentLoaded", () => {
+            updateCartCountHeader();
+        });
+
+        // Universal Shared Cart Reader/Writer using 'cp_cart'
+        function addToCart(productName, price, qtyInputId, btnElement) {
+            const qtyInput = document.getElementById(qtyInputId);
+            const quantity = parseInt(qtyInput ? qtyInput.value : 1) || 1;
+
+            let cart = JSON.parse(localStorage.getItem('cp_cart')) || [];
+            
+            const existingIndex = cart.findIndex(item => item.name === productName);
+            if (existingIndex > -1) {
+                cart[existingIndex].quantity += quantity;
+            } else {
+                cart.push({
+                    name: productName,
+                    price: parseFloat(price),
+                    quantity: quantity
+                });
+            }
+
+            localStorage.setItem('cp_cart', JSON.stringify(cart));
+            updateCartCountHeader();
+
+            // Visual feedback on button
+            if (btnElement) {
+                const originalText = btnElement.innerText;
+                btnElement.innerText = "Added!";
+                btnElement.style.background = "#1b5e20";
+                setTimeout(() => {
+                    btnElement.innerText = originalText;
+                    btnElement.style.background = "";
+                }, 1500);
+            }
+        }
+
+        function updateCartCountHeader() {
+            const cart = JSON.parse(localStorage.getItem('cp_cart')) || [];
+            const totalCount = cart.reduce((sum, item) => sum + (parseInt(item.quantity) || 0), 0);
+            const badge = document.getElementById('cart-count');
+            if (badge) {
+                badge.innerText = totalCount;
+            }
+        }
+
+        // Live table filtering function
         function filterProducts() {
             const input = document.getElementById("productSearch");
             const filter = input.value.toUpperCase();
             const table = document.getElementById("productTable");
             const tr = table.getElementsByTagName("tr");
 
-            // Loop through all table rows (starting from 1 to skip header)
             for (let i = 1; i < tr.length; i++) {
                 let rowText = tr[i].textContent || tr[i].innerText;
                 if (rowText.toUpperCase().indexOf(filter) > -1) {
