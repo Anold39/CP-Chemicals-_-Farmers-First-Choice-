@@ -56,6 +56,23 @@
         }
         .btn-db:hover { background: #1b5e20; box-shadow: 0 2px 8px rgba(0,0,0,0.2); }
 
+        .btn-escalations {
+            background: #ef6c00;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 25px;
+            cursor: pointer;
+            font-weight: bold;
+            margin-left: 10px;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            transition: 0.3s;
+        }
+        .btn-escalations:hover { background: #e65100; box-shadow: 0 2px 8px rgba(0,0,0,0.2); }
+
         .btn-logout { 
             background: #d32f2f; 
             color: white; 
@@ -89,6 +106,10 @@
 
                 <a href="farmer_database.html" class="btn-db">
                     <i class="fas fa-database"></i> Farmer Database
+                </a>
+
+                <a href="ai_escalations.html" class="btn-escalations">
+                    <i class="fas fa-headset"></i> AI Escalations
                 </a>
                 
                 <button class="btn-logout" onclick="logoutStaff()">
@@ -141,6 +162,158 @@
                 window.location.href = 'staff_login.html';
             }
         }
+
+        // Live Communication and Dashboard Logic
+        function loadFarmerQueries() {
+            const queriesArea = document.getElementById('incoming-queries-area');
+            const queries = JSON.parse(localStorage.getItem('agronomyQueries')) || [];
+
+            if (queries.length === 0) {
+                queriesArea.innerHTML = '<p style="color:#666; padding: 20px; background: white; border-radius: 8px;">No active farmer inquiries at the moment.</p>';
+                return;
+            }
+
+            queriesArea.innerHTML = queries.map((q, idx) => `
+                <div class="query-card" style="flex-direction: column; align-items: stretch; margin-bottom: 20px;">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+                        <div>
+                            <strong style="font-size: 1.1rem; color: #2e7d32;">${q.farmerName}</strong> 
+                            <span style="color: #666; font-size: 0.9rem;">(${q.branch || 'General Branch'})</span>
+                        </div>
+                        <span class="status-pill" style="background: ${q.status === 'Resolved' ? '#d4edda' : '#ffeeba'}; color: ${q.status === 'Resolved' ? '#155724' : '#856404'};">
+                            ${q.status}
+                        </span>
+                    </div>
+
+                    <p style="margin: 10px 0; font-size: 1rem; color: #333;">${q.message}</p>
+                    
+                    ${q.image ? `<div style="margin: 10px 0;"><img src="${q.image}" style="max-width: 250px; max-height: 200px; border-radius: 6px; border: 1px solid #ccc;"></div>` : ''}
+
+                    <small style="color: #888; display: block; margin-bottom: 10px;">Received: ${q.timestamp}</small>
+
+                    ${q.replies && q.replies.length > 0 ? `
+                        <div style="background: #f0f4f8; padding: 10px; border-radius: 6px; margin-bottom: 10px;">
+                            <strong style="font-size: 0.85rem; color: #1a237e;">Previous Replies:</strong>
+                            ${q.replies.map(r => `<p style="margin: 4px 0; font-size: 0.9rem;">${r.text} <em style="font-size: 0.75rem; color: #777;">(${r.time})</em></p>`).join('')}
+                        </div>
+                    ` : ''}
+
+                    <div style="display: flex; gap: 10px; margin-top: 10px;">
+                        <input type="text" id="reply-input-${idx}" placeholder="Type response to farmer..." style="flex: 1; padding: 8px 12px; border: 1px solid #ccc; border-radius: 4px;">
+                        <button class="btn-resolve" onclick="sendResponse(${idx})"><i class="fas fa-paper-plane"></i> Reply</button>
+                        <button class="btn-delete" onclick="deleteQuery(${idx})"><i class="fas fa-trash"></i> Delete</button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function sendResponse(index) {
+            const replyText = document.getElementById(`reply-input-${index}`).value.trim();
+            if (!replyText) {
+                alert('Please enter a response message before sending.');
+                return;
+            }
+
+            const queries = JSON.parse(localStorage.getItem('agronomyQueries')) || [];
+            if (!queries[index].replies) queries[index].replies = [];
+
+            queries[index].replies.push({
+                text: replyText,
+                time: new Date().toLocaleString()
+            });
+            queries[index].status = 'Resolved';
+
+            localStorage.setItem('agronomyQueries', JSON.stringify(queries));
+            loadFarmerQueries();
+        }
+
+        function deleteQuery(index) {
+            if (confirm("Are you sure you want to delete this query?")) {
+                const queries = JSON.parse(localStorage.getItem('agronomyQueries')) || [];
+                queries.splice(index, 1);
+                localStorage.setItem('agronomyQueries', JSON.stringify(queries));
+                loadFarmerQueries();
+            }
+        }
+
+        function publishPost() {
+            const title = document.getElementById('blogTitle').value.trim();
+            const content = document.getElementById('blogContent').value.trim();
+            const imageFile = document.getElementById('blogImage').files[0];
+
+            if (!title || !content) {
+                alert('Please complete the title and content fields.');
+                return;
+            }
+
+            const processPublish = (imgData = null) => {
+                const posts = JSON.parse(localStorage.getItem('agriTalkPosts')) || [];
+                posts.unshift({
+                    id: Date.now(),
+                    title: title,
+                    content: content,
+                    image: imgData,
+                    date: new Date().toLocaleDateString()
+                });
+                localStorage.setItem('agriTalkPosts', JSON.stringify(posts));
+                alert('Post published live to Agri-Talk successfully!');
+                document.getElementById('blogForm').reset();
+                loadManagePosts();
+            };
+
+            if (imageFile) {
+                const reader = new FileReader();
+                reader.onload = e => processPublish(e.target.result);
+                reader.readAsDataURL(imageFile);
+            } else {
+                processPublish(null);
+            }
+        }
+
+        function loadManagePosts() {
+            const manageArea = document.getElementById('manage-posts-area');
+            const posts = JSON.parse(localStorage.getItem('agriTalkPosts')) || [];
+
+            if (posts.length === 0) {
+                manageArea.innerHTML = '<p style="color:#999; font-style:italic;">No published posts found.</p>';
+                return;
+            }
+
+            manageArea.innerHTML = `
+                <table>
+                    <thead>
+                        <tr style="text-align: left; background: #eee;">
+                            <th style="padding: 8px;">Title</th>
+                            <th style="padding: 8px;">Date</th>
+                            <th style="padding: 8px;">Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        ${posts.map((p, i) => `
+                            <tr>
+                                <td><strong>${p.title}</strong></td>
+                                <td>${p.date}</td>
+                                <td><button class="btn-delete" onclick="deletePost(${i})">Remove</button></td>
+                            </tr>
+                        `).join('')}
+                    </tbody>
+                </table>
+            `;
+        }
+
+        function deletePost(index) {
+            if (confirm("Remove this post from Agri-Talk feed?")) {
+                const posts = JSON.parse(localStorage.getItem('agriTalkPosts')) || [];
+                posts.splice(index, 1);
+                localStorage.setItem('agriTalkPosts', JSON.stringify(posts));
+                loadManagePosts();
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            loadFarmerQueries();
+            loadManagePosts();
+        });
     </script>
 
     <script src="script.js"></script>
