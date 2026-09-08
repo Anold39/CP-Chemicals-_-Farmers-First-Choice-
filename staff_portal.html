@@ -247,7 +247,7 @@
             }
 
             const processPublish = (imgData = null) => {
-                const posts = JSON.parse(localStorage.getItem('agriTalkPosts')) || [];
+                const posts = JSON.parse(localStorage.getItem('CP_BLOGS')) || [];
                 posts.unshift({
                     id: Date.now(),
                     title: title,
@@ -255,7 +255,7 @@
                     image: imgData,
                     date: new Date().toLocaleDateString()
                 });
-                localStorage.setItem('agriTalkPosts', JSON.stringify(posts));
+                localStorage.setItem('CP_BLOGS', JSON.stringify(posts));
                 alert('Post published live to Agri-Talk successfully!');
                 document.getElementById('blogForm').reset();
                 loadManagePosts();
@@ -272,7 +272,7 @@
 
         function loadManagePosts() {
             const manageArea = document.getElementById('manage-posts-area');
-            const posts = JSON.parse(localStorage.getItem('agriTalkPosts')) || [];
+            const posts = JSON.parse(localStorage.getItem('CP_BLOGS')) || [];
 
             if (posts.length === 0) {
                 manageArea.innerHTML = '<p style="color:#999; font-style:italic;">No published posts found.</p>';
@@ -303,9 +303,9 @@
 
         function deletePost(index) {
             if (confirm("Remove this post from Agri-Talk feed?")) {
-                const posts = JSON.parse(localStorage.getItem('agriTalkPosts')) || [];
+                const posts = JSON.parse(localStorage.getItem('CP_BLOGS')) || [];
                 posts.splice(index, 1);
-                localStorage.setItem('agriTalkPosts', JSON.stringify(posts));
+                localStorage.setItem('CP_BLOGS', JSON.stringify(posts));
                 loadManagePosts();
             }
         }

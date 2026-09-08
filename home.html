@@ -13,8 +13,8 @@
         <nav>
             <div class="logo">
                 <a href="index.html" class="logo-link">
-                <img src="20th Anniversary.png" alt="20th Anniversary" class="Anniversary">
-                <span class="intro-hint"><i class="fas fa-play-circle"></i> </span>
+                    <img src="20th Anniversary.png" alt="20th Anniversary" class="Anniversary">
+                    <span class="intro-hint"><i class="fas fa-play-circle"></i> </span>
                 </a>
             </div>
             
@@ -77,11 +77,11 @@
         </div>
         <p>&copy; 2026 CP Chemicals PVT Limited. All Rights Reserved.</p>
         
-       <p>
-       <a href="index.html" style="color: #2e7d32; font-size: 0.85rem; text-decoration: none; font-weight: bold;">
-        <i class="fas fa-play-circle"></i> Intro
-      </a>
-      </p>
+        <p>
+            <a href="index.html" style="color: #2e7d32; font-size: 0.85rem; text-decoration: none; font-weight: bold;">
+                <i class="fas fa-play-circle"></i> Intro
+            </a>
+        </p>
         
         <a href="staff_login.html" style="color: #777; font-size: 0.75rem; text-decoration: none;">
             <i class="fas fa-lock"></i> Authorized Staff Portal
@@ -89,5 +89,18 @@
     </footer>
 
     <script src="script.js"></script>
+    <script>
+        // Direct Override to prevent cached navbar numbers on Home landing
+        function syncHomeCart() {
+            const raw = localStorage.getItem('CP_CART') || localStorage.getItem('cp_cart');
+            const cartData = raw ? JSON.parse(raw) : [];
+            const total = cartData.reduce((sum, item) => sum + (parseInt(item.qty || item.quantity) || 1), 0);
+            const badge = document.getElementById('cart-count');
+            if (badge) badge.innerText = total;
+        }
+
+        document.addEventListener('DOMContentLoaded', syncHomeCart);
+        window.addEventListener('pageshow', syncHomeCart);
+    </script>
 </body>
 </html>
