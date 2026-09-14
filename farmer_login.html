@@ -57,6 +57,7 @@
                 <li><button><a href="shop_online.html" class="btn-shop">
                     <i class="fas fa-shopping-cart"></i> Cart (<span id="cart-count">0</span>)
                 </a></button></li>
+                <li><button><a href="order_history.html">My Orders</a></button></li>
                 <li><button><a href="farmer_login.html">Farmer Registration</a></button></li>
             </ul>
         </nav>
@@ -162,7 +163,7 @@
         </div>
         <p>&copy; 2026 CP Chemicals PVT Limited. All Rights Reserved.</p>
         <br>
-        <a href="staff_portal.html" style="color: #777; font-size: 0.75rem; text-decoration: none;">
+        <a href="staff_login.html" style="color: #777; font-size: 0.75rem; text-decoration: none;">
             <i class="fas fa-lock"></i> Authorized Staff Portal
         </a>
     </footer>
@@ -196,10 +197,26 @@
                 selectedCrops.push(checkbox.value);
             });
 
+            // Basic client-side validation before saving
+            const nameVal = document.getElementById('farmerName').value.trim();
+            const phoneVal = document.getElementById('farmerPhone').value.trim();
+            const phonePattern = /^(\+263|0)[0-9]{9}$/;
+
+            if (nameVal.length < 2) {
+                alert('Please enter your full name (at least 2 characters).');
+                document.getElementById('farmerName').focus();
+                return;
+            }
+            if (!phonePattern.test(phoneVal.replace(/\s+/g, ''))) {
+                alert('Please enter a valid Zimbabwean phone number, e.g. 077XXXXXXX or +263 77XXXXXXX.');
+                document.getElementById('farmerPhone').focus();
+                return;
+            }
+
             // Collect Data
             const newFarmer = {
-                name: document.getElementById('farmerName').value,
-                phone: document.getElementById('farmerPhone').value,
+                name: nameVal,
+                phone: phoneVal,
                 district: document.getElementById('farmerDistrict').value,
                 crops: selectedCrops.length > 0 ? selectedCrops.join(", ") : "None Selected",
                 rating: selectedRating,

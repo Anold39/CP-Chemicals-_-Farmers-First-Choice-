@@ -146,6 +146,12 @@
     </div>
 
     <script>
+        function escapeHTMLDB(str) {
+            return String(str == null ? '' : str).replace(/[&<>'"]/g,
+                tag => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', "'": '&#39;', '"': '&quot;' }[tag] || tag)
+            );
+        }
+
         document.addEventListener('DOMContentLoaded', renderDatabase);
 
         function renderDatabase() {
@@ -181,12 +187,12 @@
 
                 const row = `
                     <tr>
-                        <td style="color: #888; font-size: 0.85rem;">${farmer.date}</td>
-                        <td><strong>${farmer.name}</strong><br><small style="color:#666">${farmer.phone}</small></td>
-                        <td>${farmer.district}</td>
+                        <td style="color: #888; font-size: 0.85rem;">${escapeHTMLDB(farmer.date)}</td>
+                        <td><strong>${escapeHTMLDB(farmer.name)}</strong><br><small style="color:#666">${escapeHTMLDB(farmer.phone)}</small></td>
+                        <td>${escapeHTMLDB(farmer.district)}</td>
                         <td><span class="hectare-badge">${ha} Ha</span></td>
-                        <td><span class="crop-tag">${farmer.crops || 'General'}</span></td>
-                        <td><span class="rating-badge"><i class="fas fa-star"></i> ${farmer.rating}</span></td>
+                        <td><span class="crop-tag">${escapeHTMLDB(farmer.crops || 'General')}</span></td>
+                        <td><span class="rating-badge"><i class="fas fa-star"></i> ${escapeHTMLDB(farmer.rating)}</span></td>
                         <td>
                             <button title="Edit Farmer" class="action-btn btn-edit" onclick="editFarmer(${index})"><i class="fas fa-edit"></i></button>
                             <button title="Remove Farmer" class="action-btn btn-delete" onclick="deleteFarmer(${index})"><i class="fas fa-trash"></i></button>

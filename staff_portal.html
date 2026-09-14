@@ -88,6 +88,27 @@
             gap: 8px;
         }
         .btn-logout:hover { background: #b71c1c; box-shadow: 0 2px 8px rgba(0,0,0,0.2); }
+
+        .tools-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+            gap: 15px;
+            margin-bottom: 10px;
+        }
+        .tool-card {
+            background: white;
+            border-radius: 10px;
+            padding: 20px 15px;
+            text-align: center;
+            text-decoration: none;
+            color: #333;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+            border-top: 4px solid var(--cp-green);
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+        .tool-card:hover { transform: translateY(-4px); box-shadow: 0 6px 16px rgba(0,0,0,0.15); }
+        .tool-card i { font-size: 1.8rem; color: var(--cp-green); display: block; margin-bottom: 8px; }
+        .tool-card span { font-weight: 600; font-size: 0.9rem; }
     </style>
 </head>
 <body>
@@ -103,19 +124,35 @@
                 <a href="home.html" class="btn-shop" style="background: #666; text-decoration: none; padding: 10px 20px; border-radius: 25px; color: white; display: flex; align-items: center; gap: 8px;">
                     <i class="fas fa-arrow-left"></i> Back to Website
                 </a>
-
-                <a href="farmer_database.html" class="btn-db">
-                    <i class="fas fa-database"></i> Farmer Database
-                </a>
-
-                <a href="ai_escalations.html" class="btn-escalations">
-                    <i class="fas fa-headset"></i> AI Escalations
-                </a>
                 
                 <button class="btn-logout" onclick="logoutStaff()">
                     <i class="fas fa-sign-out-alt"></i> Logout
                 </button>
             </div>
+        </div>
+
+        <h3 class="admin-section-title">Management Tools</h3>
+        <div class="tools-grid">
+            <a href="farmer_database.html" class="tool-card">
+                <i class="fas fa-database"></i>
+                <span>Farmer Database</span>
+            </a>
+            <a href="ai_escalations.html" class="tool-card" style="border-top-color:#ef6c00;">
+                <i class="fas fa-headset"></i>
+                <span>AI Escalations</span>
+            </a>
+            <a href="sales_history.html" class="tool-card" style="border-top-color:#1565c0;">
+                <i class="fas fa-receipt"></i>
+                <span>Sales History</span>
+            </a>
+            <a href="diagnosis_reports.html" class="tool-card" style="border-top-color:#6a1b9a;">
+                <i class="fas fa-stethoscope"></i>
+                <span>Diagnosis Reports</span>
+            </a>
+            <a href="inventory_management.html" class="tool-card" style="border-top-color:#00695c;">
+                <i class="fas fa-boxes-stacked"></i>
+                <span>Inventory Management</span>
+            </a>
         </div>
 
         <hr>
@@ -177,24 +214,24 @@
                 <div class="query-card" style="flex-direction: column; align-items: stretch; margin-bottom: 20px;">
                     <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
                         <div>
-                            <strong style="font-size: 1.1rem; color: #2e7d32;">${q.farmerName}</strong> 
-                            <span style="color: #666; font-size: 0.9rem;">(${q.branch || 'General Branch'})</span>
+                            <strong style="font-size: 1.1rem; color: #2e7d32;">${escapeHTML(q.farmerName)}</strong> 
+                            <span style="color: #666; font-size: 0.9rem;">(${escapeHTML(q.branch || 'General Branch')})</span>
                         </div>
                         <span class="status-pill" style="background: ${q.status === 'Resolved' ? '#d4edda' : '#ffeeba'}; color: ${q.status === 'Resolved' ? '#155724' : '#856404'};">
-                            ${q.status}
+                            ${escapeHTML(q.status)}
                         </span>
                     </div>
 
-                    <p style="margin: 10px 0; font-size: 1rem; color: #333;">${q.message}</p>
+                    <p style="margin: 10px 0; font-size: 1rem; color: #333;">${escapeHTML(q.message)}</p>
                     
                     ${q.image ? `<div style="margin: 10px 0;"><img src="${q.image}" style="max-width: 250px; max-height: 200px; border-radius: 6px; border: 1px solid #ccc;"></div>` : ''}
 
-                    <small style="color: #888; display: block; margin-bottom: 10px;">Received: ${q.timestamp}</small>
+                    <small style="color: #888; display: block; margin-bottom: 10px;">Received: ${escapeHTML(q.timestamp)}</small>
 
                     ${q.replies && q.replies.length > 0 ? `
                         <div style="background: #f0f4f8; padding: 10px; border-radius: 6px; margin-bottom: 10px;">
                             <strong style="font-size: 0.85rem; color: #1a237e;">Previous Replies:</strong>
-                            ${q.replies.map(r => `<p style="margin: 4px 0; font-size: 0.9rem;">${r.text} <em style="font-size: 0.75rem; color: #777;">(${r.time})</em></p>`).join('')}
+                            ${q.replies.map(r => `<p style="margin: 4px 0; font-size: 0.9rem;">${escapeHTML(r.text)} <em style="font-size: 0.75rem; color: #777;">(${escapeHTML(r.time)})</em></p>`).join('')}
                         </div>
                     ` : ''}
 
@@ -291,8 +328,8 @@
                     <tbody>
                         ${posts.map((p, i) => `
                             <tr>
-                                <td><strong>${p.title}</strong></td>
-                                <td>${p.date}</td>
+                                <td><strong>${escapeHTML(p.title)}</strong></td>
+                                <td>${escapeHTML(p.date)}</td>
                                 <td><button class="btn-delete" onclick="deletePost(${i})">Remove</button></td>
                             </tr>
                         `).join('')}

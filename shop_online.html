@@ -161,6 +161,9 @@
                 <button onclick="emptyCart()" class="btn-shop" style="margin-top: 15px; background: #666; cursor: pointer;">
                     <i class="fas fa-trash"></i> Empty Cart
                 </button>
+                <a href="order_history.html" class="btn-shop" style="margin-top: 15px; margin-left: 10px; background: #1565c0; text-decoration:none; display:inline-flex; align-items:center; gap:8px;">
+                    <i class="fas fa-receipt"></i> My Orders
+                </a>
             </div>
 
             <div class="card order-summary-card">
@@ -170,7 +173,13 @@
                     <span>Grand Total:</span>
                     <span id="cart-total">$0.00</span>
                 </div>
-                
+
+                <h4 style="margin-top: 20px;">Your Details (for invoice)</h4>
+                <div style="margin-top: 10px;">
+                    <input type="text" id="checkoutFarmerName" class="qty-input" style="width:100%; margin-bottom:8px; padding:10px;" placeholder="Full Name">
+                    <input type="tel" id="checkoutFarmerPhone" class="qty-input" style="width:100%; padding:10px;" placeholder="Phone Number">
+                </div>
+
                 <h4 style="margin-top: 20px;">Payment Gateway</h4>
                 <div class="payment-options" style="margin-top: 15px;">
                     <p style="margin-bottom: 12px; font-size: 0.9rem; color: #666;">Select your preferred payment method to complete the order:</p>
@@ -190,6 +199,22 @@
             </div>
         </div>
     </section>
+
+    <!-- Post-Checkout Invoice Modal -->
+    <div id="invoiceModalOverlay" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.55); z-index:3000; align-items:center; justify-content:center;">
+        <div style="background:white; border-radius:12px; max-width:480px; width:92%; padding:30px; text-align:center; box-shadow:0 10px 30px rgba(0,0,0,0.3);">
+            <i class="fas fa-check-circle" style="font-size:3rem; color:#2e7d32;"></i>
+            <h2 style="margin:15px 0 5px;">Order Confirmed!</h2>
+            <p id="invoiceModalNumber" style="color:#666; margin-bottom:20px;"></p>
+            <p style="font-size:0.9rem; color:#555; margin-bottom:20px;">Your invoice will be presented upon collection at your selected branch. Download or email a copy for your records below.</p>
+            <div style="display:flex; flex-direction:column; gap:10px;">
+                <button class="btn-shop" style="background:#2e7d32;" onclick="downloadInvoicePDF(window.__lastInvoiceNo)"><i class="fas fa-file-pdf"></i> Download Invoice (PDF)</button>
+                <button class="btn-shop" style="background:#1565c0;" onclick="emailInvoice(window.__lastInvoiceNo)"><i class="fas fa-envelope"></i> Email Invoice to Myself</button>
+                <button class="btn-shop" style="background:#666;" onclick="viewInvoice(window.__lastInvoiceNo)"><i class="fas fa-print"></i> View / Print Invoice</button>
+                <a href="home.html" class="btn-shop" style="background:#888; text-decoration:none;">Continue to Home</a>
+            </div>
+        </div>
+    </div>
 
     <footer>
         <div class="social-links">
@@ -213,6 +238,9 @@
         </a>
     </footer>
 
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="products-data.js"></script>
+    <script src="invoice.js"></script>
     <script src="script.js"></script>
 
     <script>
@@ -323,6 +351,14 @@
                 return;
             }
 
+            const nameVal = document.getElementById('checkoutFarmerName').value.trim();
+            const phoneVal = document.getElementById('checkoutFarmerPhone').value.trim();
+            if (!nameVal || !phoneVal) {
+                alert("Please enter your name and phone number above so we can generate your invoice.");
+                document.getElementById('checkoutFarmerName').focus();
+                return;
+            }
+
             let grandTotal = 0;
             cart.forEach(item => {
                 const price = parseFloat(item.price) || 0;
@@ -334,14 +370,14 @@
                 const phone = prompt(`EcoCash / OneMoney Checkout\nTotal Amount: $${grandTotal.toFixed(2)}\n\nPlease enter your Mobile Number (e.g., 077XXXXXXX):`);
                 if (phone) {
                     alert(`Payment request sent to ${phone}.\n\nPlease check your mobile handset to enter your PIN and complete the transaction of $${grandTotal.toFixed(2)}.`);
-                    completeOrder('EcoCash / OneMoney');
+                    completeOrder('EcoCash / OneMoney', nameVal, phoneVal);
                 }
             } 
             else if (gateway === 'visa') {
                 const cardNumber = prompt(`Visa / Mastercard Checkout\nTotal Amount: $${grandTotal.toFixed(2)}\n\nPlease enter your 16-digit Card Number:`);
                 if (cardNumber) {
                     alert(`Processing Visa/Mastercard transaction of $${grandTotal.toFixed(2)}...\n\nPayment Successful! Thank you for your purchase with CP Chemicals.`);
-                    completeOrder('Visa / Mastercard');
+                    completeOrder('Visa / Mastercard', nameVal, phoneVal);
                 }
             } 
             else if (gateway === 'bank') {
@@ -352,15 +388,20 @@
                       `Reference: CP-${Math.floor(100000 + Math.random() * 900000)}\n\n` +
                       `Amount Due: $${grandTotal.toFixed(2)}\n\n` +
                       `Please send proof of payment to sales@cpchemicals.co.zw or via WhatsApp.`);
-                completeOrder('Bank Transfer / ZIPIT');
+                completeOrder('Bank Transfer / ZIPIT', nameVal, phoneVal);
             }
         }
 
-        function completeOrder(paymentMethod) {
+        function completeOrder(paymentMethod, farmerName, farmerPhone) {
+            const cart = getStoredCart();
+            const invoice = generateInvoice(cart, farmerName, farmerPhone, paymentMethod);
+
             localStorage.removeItem('cp_cart');
             renderCart();
-            alert(`Order logged successfully via ${paymentMethod}! Redirecting to home page...`);
-            window.location.href = 'home.html';
+
+            window.__lastInvoiceNo = invoice.invoiceNo;
+            document.getElementById('invoiceModalNumber').innerText = `Invoice ${invoice.invoiceNo} \u2014 Total $${invoice.total.toFixed(2)}`;
+            document.getElementById('invoiceModalOverlay').style.display = 'flex';
         }
 
         function escapeHTML(str) {

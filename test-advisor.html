@@ -63,6 +63,14 @@
     <!-- Quick Selection Control -->
     <div class="card mb-3 shadow-sm border-0">
         <div class="card-body">
+            <div class="row g-2 mb-2">
+                <div class="col-md-8">
+                    <input type="text" id="advisorFarmerName" class="form-control form-control-sm" placeholder="Your name (used to find your diagnosis history and any agronomist responses)">
+                </div>
+                <div class="col-md-4">
+                    <button class="btn btn-outline-primary btn-sm w-100" onclick="checkEscalationStatus()"><i class="bi"></i> Check My Escalation Status</button>
+                </div>
+            </div>
             <div class="row g-2">
                 <div class="col-md-5">
                     <select id="cropType" class="form-select">
@@ -148,234 +156,13 @@
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script src="products-data.js"></script>
+<script src="diagnosis-log.js"></script>
 <script>
     // Complete AI Knowledge Base (28 Products)
-    const aiKnowledgeBaseProducts = [
-        {
-            name: "CP Maize Booster",
-            category: "Fertilizer",
-            unitSize: "50kg Bag",
-            price: 35.00,
-            description: "High-yield top dressing fertilizer for maize and cereal crops.",
-            keywords: ["maize booster", "booster", "top dressing", "fertilizer", "yield booster", "yellowing leaves", "yellowish", "yellow"]
-        },
-        {
-            name: "Termi-Kill 500",
-            category: "Insecticide",
-            unitSize: "1 Litre",
-            price: 12.50,
-            description: "Advanced termite control solution for subterranean and crop pests.",
-            keywords: ["termite", "termites", "termi-kill", "subterranean", "white ants"]
-        },
-        {
-            name: "CP-Glyphosate Max",
-            category: "Herbicide",
-            unitSize: "5 Litre",
-            price: 45.00,
-            description: "Total systemic non-selective weed control for land clearing.",
-            keywords: ["glyphosate", "land clearing", "total weed", "non-selective", "weed control"]
-        },
-        {
-            name: "Livestock Dip",
-            category: "Vet Care",
-            unitSize: "5 Litre",
-            price: 55.00,
-            description: "Tick and parasite protection dip for cattle and livestock.",
-            keywords: ["dip", "livestock", "tick", "ticks", "parasite", "cattle"]
-        },
-        {
-            name: "Veggie Master",
-            category: "Fertilizer",
-            unitSize: "1 Litre",
-            price: 8.00,
-            description: "Horticulture liquid feed nutrient formulation for vegetables.",
-            keywords: ["veggie master", "horticulture", "liquid feed", "vegetable feed", "nutrients"]
-        },
-        {
-            name: "CP Maize Seed (SC719)",
-            category: "Seeds",
-            unitSize: "10kg Bag",
-            price: 28.00,
-            description: "Drought resistant hybrid maize seed variety for high yield.",
-            keywords: ["maize seed", "sc719", "hybrid seed", "seed", "planting seed"]
-        },
-        {
-            name: "CP Knapsack Sprayer",
-            category: "Hardware",
-            unitSize: "Each",
-            price: 22.00,
-            description: "16L Manual pump knapsack sprayer for chemical application.",
-            keywords: ["knapsack", "sprayer", "pump", "hardware", "equipment"]
-        },
-        {
-            name: "Copper Oxychloride",
-            category: "Fungicide",
-            unitSize: "500g",
-            price: 10.00,
-            description: "Preventative fungicide for vegetable blights and fungal spots.",
-            keywords: ["copper oxychloride", "copper spray", "fungal spots", "preventative fungicide"]
-        },
-        {
-            name: "Protective Gumboots",
-            category: "PPE",
-            unitSize: "Pair",
-            price: 15.00,
-            description: "Heavy duty rubber safety gumboots for field workers.",
-            keywords: ["gumboots", "boots", "ppe", "protective", "safety boots"]
-        },
-        {
-            name: "Rat-Ban Pellets",
-            category: "Pest Control",
-            unitSize: "100g",
-            price: 3.50,
-            description: "Single feed rodenticide bait for farm and store rats.",
-            keywords: ["rat", "rats", "rodent", "rodents", "rat-ban", "mice"]
-        },
-        {
-            name: "SuperGrass Herbicide",
-            category: "Herbicide",
-            unitSize: "1 Litre",
-            price: 15.00,
-            description: "Effective against broadleaf weeds & grass in maize crops.",
-            keywords: ["supergrass", "grass", "broadleaf weeds", "maize weeds"]
-        },
-        {
-            name: "BorerStrike 20EC",
-            category: "Insecticide",
-            unitSize: "1 Litre",
-            price: 22.50,
-            description: "Targets stalk borers & stem chewers effectively.",
-            keywords: ["borer", "stalk borer", "stem borer", "borerstrike", "stem chewers"]
-        },
-        {
-            name: "FungiCure Max",
-            category: "Fungicide",
-            unitSize: "1 Litre",
-            price: 18.00,
-            description: "Broad-spectrum systemic fungicide for leaf spots & rust.",
-            keywords: ["fungicure", "leaf spot", "fungal spots", "rust", "systemic fungicide"]
-        },
-        {
-            name: "ArmyGuard Pro",
-            category: "Insecticide",
-            unitSize: "1 Litre",
-            price: 25.00,
-            description: "Fast-acting contact insecticide specifically for fall armyworm.",
-            keywords: ["armyworm", "fall armyworm", "armyguard", "caterpillar"]
-        },
-        {
-            name: "AphidKill 500",
-            category: "Insecticide",
-            unitSize: "500ml",
-            price: 14.50,
-            description: "Controls aphids, whiteflies, & sap-suckers.",
-            keywords: ["aphid", "aphids", "whiteflies", "sap-suckers", "aphidkill"]
-        },
-        {
-            name: "BlightShield Copper",
-            category: "Fungicide",
-            unitSize: "1kg Bag",
-            price: 20.00,
-            description: "Copper-based preventative spray for blights on tomatoes & potatoes.",
-            keywords: ["blight", "early blight", "late blight", "blightshield", "tomatoes blight"]
-        },
-        {
-            name: "Tobacco Gold Fungicide",
-            category: "Fungicide",
-            unitSize: "1 Litre",
-            price: 30.00,
-            description: "Specialized formulation for tobacco diseases like sore shin & spot.",
-            keywords: ["tobacco", "sore shin", "tobacco gold", "tobacco disease"]
-        },
-        {
-            name: "Cotton Protect 360",
-            category: "Insecticide",
-            unitSize: "1 Litre",
-            price: 27.50,
-            description: "Combats bollworms & stainers in cotton crops.",
-            keywords: ["cotton", "bollworm", "stainers", "cotton protect"]
-        },
-        {
-            name: "WeedClear Selective",
-            category: "Herbicide",
-            unitSize: "1 Litre",
-            price: 16.00,
-            description: "Selective post-emergence weed control for cereal crops.",
-            keywords: ["weedclear", "selective herbicide", "post-emergence", "cereal weeds"]
-        },
-        {
-            name: "MildewFree Systemic",
-            category: "Fungicide",
-            unitSize: "500ml",
-            price: 19.50,
-            description: "Eradicates powdery mildew & white mold.",
-            keywords: ["mildew", "powdery mildew", "white mold", "mildewfree"]
-        },
-        {
-            name: "Nematode-X Soil Drench",
-            category: "Pest Control",
-            unitSize: "1 Litre",
-            price: 32.00,
-            description: "Soil nematicide treatment for healthy root systems.",
-            keywords: ["nematode", "root knot", "galls", "nematicide", "nematode-x"]
-        },
-        {
-            name: "Cutworm Buster",
-            category: "Insecticide",
-            unitSize: "500ml",
-            price: 13.00,
-            description: "Surface spray for nocturnal cutworm control during emergence.",
-            keywords: ["cutworm", "nocturnal", "seedling cut", "cutworm buster"]
-        },
-        {
-            name: "RedSpider MiteKill",
-            category: "Insecticide",
-            unitSize: "500ml",
-            price: 21.00,
-            description: "Targeted miticide for red spider mites in horticulture.",
-            keywords: ["red spider", "spider mite", "miticide", "mitekill"]
-        },
-        {
-            name: "RustStop Cereal Spray",
-            category: "Fungicide",
-            unitSize: "1 Litre",
-            price: 24.00,
-            description: "Engineered fungicide for wheat & cereal rust prevention.",
-            keywords: ["ruststop", "wheat rust", "cereal rust", "wheat spray"]
-        },
-        {
-            name: "Soybean Nodul-Boost",
-            category: "Fertilizer",
-            unitSize: "1 Litre",
-            price: 12.00,
-            description: "Inoculant & foliar spray for nitrogen fixing in legumes.",
-            keywords: ["soybean", "nodul-boost", "inoculant", "legume", "nitrogen fixing"]
-        },
-        {
-            name: "Tomato Fruitworm Defense",
-            category: "Insecticide",
-            unitSize: "500ml",
-            price: 17.50,
-            description: "Protects tomatoes & veggies from fruit borers and worms.",
-            keywords: ["fruitworm", "tomato worm", "fruit borer", "tomato defense"]
-        },
-        {
-            name: "NutriGro Folia-Feed",
-            category: "Fertilizer",
-            unitSize: "1 Litre",
-            price: 10.00,
-            description: "Liquid micro-nutrient booster for fast crop stress recovery.",
-            keywords: ["nutrigro", "foliar feed", "micro-nutrient", "crop stress"]
-        },
-        {
-            name: "Soil-Clean Pre-Emergent",
-            category: "Herbicide",
-            unitSize: "2 Litre",
-            price: 28.00,
-            description: "Pre-emergent soil spray to inhibit weed seeds before planting.",
-            keywords: ["pre-emergent", "soil-clean", "weed seeds", "pre planting"]
-        }
-    ];
+    // aiKnowledgeBaseProducts removed from here -- product data (including diagnostic keywords) now
+    // lives in the single shared catalogue in products-data.js (getProducts()), so the Advisory
+    // Channel and Sales Channel always see the same prices and, critically, the same stock levels.
 
     let escalationModalObj = null;
 
@@ -397,12 +184,7 @@
     }
 
     function findProductByQuery(searchQuery) {
-        const qLower = searchQuery.toLowerCase().trim();
-        return aiKnowledgeBaseProducts.find(item => 
-            item.keywords.some(k => qLower.includes(k.toLowerCase()) || k.toLowerCase().includes(qLower)) || 
-            item.name.toLowerCase().includes(qLower) ||
-            item.description.toLowerCase().includes(qLower)
-        );
+        return findProductByQueryShared(searchQuery);
     }
 
     function handleQuickSelect() {
@@ -426,7 +208,7 @@
         const matchedProduct = findProductByQuery(query);
 
         if (matchedProduct) {
-            renderPrescriptionCard(matchedProduct, `Matched recommended solution based on your input.`);
+            renderPrescriptionCard(matchedProduct, `Matched recommended solution based on your input.`, { crop: '', symptom: '', query: query });
         } else {
             triggerEscalationOption(query);
         }
@@ -436,14 +218,40 @@
         const matchedProduct = findProductByQuery(symptom);
 
         if (matchedProduct) {
-            renderPrescriptionCard(matchedProduct, `Recommended solution for <strong>${escapeHTML(crop)}</strong> displaying <strong>${escapeHTML(symptom)}</strong>.`);
+            renderPrescriptionCard(matchedProduct, `Recommended solution for <strong>${escapeHTML(crop)}</strong> displaying <strong>${escapeHTML(symptom)}</strong>.`, { crop: crop, symptom: symptom, query: `${crop} with ${symptom}` });
         } else {
             triggerEscalationOption(`${crop} with ${symptom}`);
         }
     }
 
-    function renderPrescriptionCard(product, contextNote) {
+    // Sanity-check threshold: flags unusually large single-product orders for confirmation rather than
+    // blocking them outright, operationalising the automated sanity-check concept in the companion
+    // mini-dissertation (Section 12.3.3) at the level this prototype's data model actually supports.
+    const SANITY_CHECK_QTY_THRESHOLD = 20;
+
+    function renderPrescriptionCard(product, contextNote, diagnosisContext = {}, logThis = true) {
         const cardId = 'card_' + Date.now();
+        const status = getStockStatus(product.stock);
+        const outOfStock = product.stock <= 0;
+        const now = new Date();
+        const ref = simpleChecksumAdvisor(product.name + product.price + now.getTime());
+
+        // Log this successful AI diagnosis to the shared history so agronomists can review it later.
+        // Skipped when this card is just re-displaying an already-logged escalation follow-up
+        // (see checkEscalationStatus), so the diagnosis history doesn't double-count one interaction.
+        if (logThis) {
+            const farmerNameVal = (document.getElementById('advisorFarmerName') || {}).value || '';
+            logDiagnosis({
+                source: 'AI Advisory Portal',
+                farmerName: farmerNameVal,
+                crop: diagnosisContext.crop || '',
+                symptom: diagnosisContext.symptom || '',
+                query: diagnosisContext.query || '',
+                productRecommended: product.name,
+                notes: outOfStock ? 'Recommended while out of stock' : ''
+            });
+        }
+
         const html = `
             <div><strong>Prescription Recommendation:</strong></div>
             <p class="small text-muted mb-1">${contextNote}</p>
@@ -453,26 +261,46 @@
                     <span class="badge bg-secondary">${escapeHTML(product.category)} (${escapeHTML(product.unitSize)})</span>
                 </div>
                 <p class="small text-dark mb-2">${escapeHTML(product.description)}</p>
+                <div class="mb-2"><span class="${status.cssClass}">${escapeHTML(status.label)}</span></div>
                 <div class="d-flex align-items-center gap-2 mb-2">
                     <label class="small fw-semibold">Qty:</label>
-                    <input type="number" id="qty_${cardId}" value="1" min="1" class="form-control form-control-sm" style="width: 75px;" onchange="updateCardPrice('${cardId}', ${product.price})">
+                    <input type="number" id="qty_${cardId}" value="1" min="1" max="${product.stock}" class="form-control form-control-sm" style="width: 75px;" onchange="updateCardPrice('${cardId}', ${product.price}, ${product.stock})" ${outOfStock ? 'disabled' : ''}>
                     <span class="small fw-bold ms-auto text-primary" id="total_${cardId}">Total: $${product.price.toFixed(2)}</span>
                 </div>
+                <div id="sanity_${cardId}" class="small text-warning fw-semibold mb-2" style="display:none;"></div>
                 <div class="d-flex gap-2">
-                    <button class="btn btn-sm btn-outline-success flex-grow-1" onclick="handleAddToCartClick('${escapeHTML(product.name)}', ${product.price}, '${cardId}')">Add to Cart</button>
-                    <button class="btn btn-sm btn-success flex-grow-1" onclick="proceedToCheckout('${escapeHTML(product.name)}', ${product.price}, '${cardId}')">💳 Checkout / Pay Online</button>
+                    <button class="btn btn-sm btn-outline-success flex-grow-1" ${outOfStock ? 'disabled' : ''} onclick="handleAddToCartClick('${escapeHTML(product.name).replace(/'/g,"\\'")}', ${product.price}, '${cardId}')">Add to Cart</button>
+                    <button class="btn btn-sm btn-success flex-grow-1" ${outOfStock ? 'disabled' : ''} onclick="proceedToCheckout('${escapeHTML(product.name).replace(/'/g,"\\'")}', ${product.price}, '${cardId}')">\ud83d\udcb3 Checkout / Pay Online</button>
                 </div>
+                ${outOfStock ? '<p class="small text-danger mt-2 mb-0"><i class="bi"></i>This item is currently out of stock. Please contact your branch or check back later.</p>' : ''}
+                <p class="small text-muted mt-2 mb-0" style="font-size:0.7rem;">Recommendation generated ${now.toLocaleTimeString()} \u00b7 Ref: ${ref}</p>
             </div>
         `;
         appendAIMessage(html);
     }
 
-    function updateCardPrice(cardId, unitPrice) {
+    function simpleChecksumAdvisor(str) {
+        let hash = 0;
+        const s = String(str);
+        for (let i = 0; i < s.length; i++) { hash = ((hash << 5) - hash + s.charCodeAt(i)) | 0; }
+        return Math.abs(hash).toString(16).toUpperCase();
+    }
+
+    function updateCardPrice(cardId, unitPrice, maxStock) {
         const qtyInput = document.getElementById(`qty_${cardId}`);
         let qty = parseInt(qtyInput.value) || 1;
         if (qty < 1) {
             qty = 1;
             qtyInput.value = 1;
+        }
+        const sanityEl = document.getElementById(`sanity_${cardId}`);
+        if (sanityEl) {
+            if (qty > SANITY_CHECK_QTY_THRESHOLD) {
+                sanityEl.style.display = 'block';
+                sanityEl.innerHTML = `\u26a0\ufe0f This quantity is unusually high for a typical smallholder order. Please confirm this is correct before checkout.`;
+            } else {
+                sanityEl.style.display = 'none';
+            }
         }
         const total = unitPrice * qty;
         document.getElementById(`total_${cardId}`).innerText = `Total: $${total.toFixed(2)}`;
@@ -515,15 +343,32 @@
     }
 
     function handleAddToCartClick(productName, unitPrice, cardId) {
-        addToCart(productName, unitPrice, cardId, false);
+        const product = findProductByName(productName);
         const qtyInput = document.getElementById(`qty_${cardId}`);
-        const qty = parseInt(qtyInput ? qtyInput.value : 1) || 1;
-        
+        let qty = parseInt(qtyInput ? qtyInput.value : 1) || 1;
+        if (product && qty > product.stock) {
+            alert(`Only ${product.stock} unit(s) of "${productName}" are currently in stock. Quantity adjusted.`);
+            qty = product.stock;
+            if (qtyInput) qtyInput.value = qty;
+        }
+        if (qty <= 0) { alert('This item is out of stock.'); return; }
+
+        addToCart(productName, unitPrice, cardId, false);
         alert(`✅ Added ${qty} x "${productName}" to your cart!`);
     }
 
     function proceedToCheckout(productName, unitPrice, cardId) {
-        // Passes true for direct checkout so it sets quantity exactly to 1 instead of stacking
+        const product = findProductByName(productName);
+        const qtyInput = document.getElementById(`qty_${cardId}`);
+        let qty = parseInt(qtyInput ? qtyInput.value : 1) || 1;
+        if (product && qty > product.stock) {
+            alert(`Only ${product.stock} unit(s) of "${productName}" are currently in stock. Quantity adjusted.`);
+            qty = product.stock;
+            if (qtyInput) qtyInput.value = qty;
+        }
+        if (qty <= 0) { alert('This item is out of stock.'); return; }
+
+        // Passes true for direct checkout so it sets quantity exactly to the confirmed amount instead of stacking
         addToCart(productName, unitPrice, cardId, true);
         window.location.href = 'shop_online.html';
     }
@@ -539,6 +384,10 @@
 
     function openEscalationModal(queryText) {
         document.getElementById('modalQueryText').value = queryText;
+        const nameField = document.getElementById('advisorFarmerName');
+        if (nameField && nameField.value) {
+            document.getElementById('farmerName').value = nameField.value;
+        }
         escalationModalObj.show();
     }
 
@@ -569,6 +418,46 @@
         alert('Your query has been escalated to CP Chemicals agronomists. We will contact you shortly!');
         document.getElementById('escalationForm').reset();
         escalationModalObj.hide();
+    }
+
+    // Checks for agronomist responses to this farmer's past escalations, on this same device/browser.
+    // Demonstrates, at prototype scale, how a resolved AI-escalation loop would close back to the farmer
+    // in the full target system (see companion mini-dissertation and Chapter Four, Section 4.1 on the
+    // per-browser storage limitation this check is subject to).
+    function checkEscalationStatus() {
+        const nameVal = (document.getElementById('advisorFarmerName').value || '').trim();
+        if (!nameVal) {
+            appendAIMessage(`<div class="text-danger small">Please enter your name above first, then click "Check My Escalation Status" -- this is how we match you to your past query.</div>`);
+            return;
+        }
+
+        const escalations = JSON.parse(localStorage.getItem('cp_ai_escalations')) || [];
+        const nameLower = nameVal.toLowerCase();
+        const matches = escalations.filter(e =>
+            (e.farmerName || '').toLowerCase().trim() === nameLower && e.status === 'Resolved' && e.agronomistReply
+        );
+
+        appendUserMessage(`Checking escalation status for "${nameVal}"...`);
+
+        if (matches.length === 0) {
+            appendAIMessage(`<div class="small text-muted">No agronomist response found yet for "${escapeHTML(nameVal)}" on this device. If you recently escalated a query, your agronomist may still be reviewing it -- please check back later, or note that this only works on the same phone/browser you used to submit the original query.</div>`);
+            return;
+        }
+
+        matches.forEach(m => {
+            const recommendedProduct = m.recommendedProduct ? findProductByName(m.recommendedProduct) : null;
+            const replyHtml = `
+                <div><strong>Response from your agronomist</strong> <span class="text-muted small">(re: your ${escapeHTML(m.crop)} / ${escapeHTML(m.symptom)} query, ${escapeHTML(m.repliedAt || m.timestamp)})</span></div>
+                <div class="prescription-card" style="border-left: 4px solid #2e7d32;">
+                    <p class="small text-dark mb-0">${escapeHTML(m.agronomistReply)}</p>
+                </div>
+            `;
+            appendAIMessage(replyHtml);
+
+            if (recommendedProduct) {
+                renderPrescriptionCard(recommendedProduct, `Your agronomist specifically recommended this product for your case.`, { crop: m.crop, symptom: m.symptom, query: 'Agronomist follow-up: ' + m.userQuery }, false);
+            }
+        });
     }
 
     function escapeHTML(str) {

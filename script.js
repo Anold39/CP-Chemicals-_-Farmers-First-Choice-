@@ -281,10 +281,10 @@ function loadBlogPosts() {
         const imgTag = post.image ? `<img src="${post.image}" style="width:100%; max-width:400px; border-radius:8px; margin:10px 0;">` : "";
         blogHTML += `
             <div class="blog-entry" style="border-bottom: 2px solid #eee; margin-bottom: 20px; padding-bottom: 10px;">
-                <h4>${post.title}</h4>
+                <h4>${escapeHTML(post.title)}</h4>
                 <small>${escapeHTML(post.date)}</small>
                 ${imgTag}
-                <p>${post.content}</p>
+                <p>${escapeHTML(post.content)}</p>
             </div>`;
     });
     display.innerHTML = blogHTML;
