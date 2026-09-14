@@ -90,6 +90,23 @@
 
         .btn-back { text-decoration: none; color: #666; font-weight: bold; display: flex; align-items: center; gap: 8px; }
         .btn-back:hover { color: var(--primary-green); }
+
+        .csv-card {
+            background: white; border-radius: 12px; padding: 22px;
+            margin: 20px auto 0; max-width: 1200px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.08); border-left: 5px solid var(--primary-green);
+        }
+        .csv-card h3 { margin-top: 0; color: var(--primary-green); }
+        .csv-card code { background: #f4f4f4; padding: 2px 6px; border-radius: 4px; }
+        .btn-csv {
+            background: var(--primary-green); color: white; border: none; padding: 10px 20px;
+            border-radius: 20px; cursor: pointer; font-weight: bold; display: inline-flex;
+            align-items: center; gap: 8px; margin-right: 10px;
+        }
+        .btn-csv:hover { background: #1b5e20; }
+        .upload-result { margin-top: 12px; padding: 10px 14px; border-radius: 6px; font-size: 0.85rem; display: none; }
+        .upload-result.success { background: #e8f5e9; color: #1b5e20; display: block; }
+        .upload-result.error { background: #ffebee; color: #b71c1c; display: block; }
     </style>
 </head>
 <body>
@@ -102,6 +119,20 @@
         <a href="staff_portal.html" class="btn-back">
             <i class="fas fa-arrow-left"></i> Back to Staff Portal
         </a>
+    </div>
+
+    <div class="csv-card">
+        <h3><i class="fas fa-file-csv"></i> Bulk Import / Export via CSV</h3>
+        <p style="font-size:0.85rem; color:#555;">
+            Upload a CSV with the header row <code>name,phone,district,crops,rating,hectares</code>.
+            Rows matching an existing farmer's <code>phone</code> number update that record; rows with a new
+            phone number are added as new farmers. <code>name</code> and <code>phone</code> are required columns.
+        </p>
+        <input type="file" id="farmerCsvInput" accept=".csv" style="margin-bottom:10px;">
+        <br>
+        <button class="btn-csv" onclick="handleFarmerCSVUpload()"><i class="fas fa-upload"></i> Upload & Merge</button>
+        <button class="btn-csv" style="background:#455a64;" onclick="exportFarmersCSV()"><i class="fas fa-download"></i> Export Current Database as CSV</button>
+        <div id="farmerUploadResult" class="upload-result"></div>
     </div>
 
     <div class="stats-container">
@@ -243,6 +274,145 @@
                 renderDatabase();
                 alert("Database entry updated.");
             }
+        }
+
+        function parseCSVLineDB(line) {
+            const result = [];
+            let current = '';
+            let inQuotes = false;
+            for (let i = 0; i < line.length; i++) {
+                const char = line[i];
+                if (inQuotes) {
+                    if (char === '"') {
+                        if (line[i + 1] === '"') { current += '"'; i++; }
+                        else { inQuotes = false; }
+                    } else {
+                        current += char;
+                    }
+                } else {
+                    if (char === '"') {
+                        inQuotes = true;
+                    } else if (char === ',') {
+                        result.push(current.trim());
+                        current = '';
+                    } else {
+                        current += char;
+                    }
+                }
+            }
+            result.push(current.trim());
+            return result;
+        }
+
+        function escapeCSVFieldDB(val) {
+            const s = String(val == null ? '' : val);
+            if (s.includes(',') || s.includes('"') || s.includes('\n')) {
+                return '"' + s.replace(/"/g, '""') + '"';
+            }
+            return s;
+        }
+
+        function exportFarmersCSV() {
+            const farmers = JSON.parse(localStorage.getItem('cp_farmers')) || [];
+            if (farmers.length === 0) { alert('No farmers to export yet.'); return; }
+
+            const headers = ['name', 'phone', 'district', 'crops', 'rating', 'hectares', 'date'];
+            const rows = farmers.map(f => [f.name, f.phone, f.district, f.crops, f.rating, f.hectares || 0, f.date]
+                .map(escapeCSVFieldDB).join(','));
+            const csv = headers.join(',') + '\n' + rows.join('\n');
+
+            const blob = new Blob([csv], { type: 'text/csv' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'CP_Chemicals_Farmer_Database_' + new Date().toISOString().slice(0, 10) + '.csv';
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+        }
+
+        /**
+         * Parses an uploaded CSV (name,phone,district,crops,rating,hectares) and merges it into
+         * cp_farmers. Existing farmers are matched by phone number (the natural unique identifier
+         * here, since names are not reliably unique) and updated in place, preserving their original
+         * registration date. Rows with a new phone number are added as new farmers with today's date.
+         */
+        function importFarmersFromCSV(csvText) {
+            const lines = csvText.split(/\r?\n/).map(l => l.trim()).filter(l => l.length > 0);
+            if (lines.length < 2) return { updated: 0, added: 0, errors: ["CSV appears to be empty or missing a header row."] };
+
+            const header = parseCSVLineDB(lines[0]).map(h => h.toLowerCase());
+            const nameIdx = header.indexOf('name');
+            const phoneIdx = header.indexOf('phone');
+            const districtIdx = header.indexOf('district');
+            const cropsIdx = header.indexOf('crops');
+            const ratingIdx = header.indexOf('rating');
+            const hectaresIdx = header.indexOf('hectares');
+
+            if (nameIdx === -1 || phoneIdx === -1) {
+                return { updated: 0, added: 0, errors: ["CSV header must include at least: name, phone."] };
+            }
+
+            const farmers = JSON.parse(localStorage.getItem('cp_farmers')) || [];
+            let updated = 0, added = 0;
+            const errors = [];
+
+            for (let i = 1; i < lines.length; i++) {
+                const cols = parseCSVLineDB(lines[i]);
+                const name = cols[nameIdx];
+                const phone = cols[phoneIdx];
+                if (!name || !phone) { errors.push(`Row ${i + 1}: missing name or phone, skipped.`); continue; }
+
+                const existingIdx = farmers.findIndex(f => f.phone === phone);
+                if (existingIdx > -1) {
+                    farmers[existingIdx].name = name;
+                    if (districtIdx > -1 && cols[districtIdx]) farmers[existingIdx].district = cols[districtIdx];
+                    if (cropsIdx > -1 && cols[cropsIdx]) farmers[existingIdx].crops = cols[cropsIdx];
+                    if (ratingIdx > -1 && cols[ratingIdx]) farmers[existingIdx].rating = cols[ratingIdx];
+                    if (hectaresIdx > -1 && cols[hectaresIdx]) farmers[existingIdx].hectares = parseFloat(cols[hectaresIdx]) || 0;
+                    updated++;
+                } else {
+                    farmers.unshift({
+                        name: name,
+                        phone: phone,
+                        district: districtIdx > -1 && cols[districtIdx] ? cols[districtIdx] : 'Other',
+                        crops: cropsIdx > -1 && cols[cropsIdx] ? cols[cropsIdx] : 'None Selected',
+                        rating: ratingIdx > -1 && cols[ratingIdx] ? cols[ratingIdx] : '5',
+                        hectares: hectaresIdx > -1 && cols[hectaresIdx] ? (parseFloat(cols[hectaresIdx]) || 0) : 0,
+                        date: new Date().toLocaleDateString()
+                    });
+                    added++;
+                }
+            }
+
+            localStorage.setItem('cp_farmers', JSON.stringify(farmers));
+            return { updated, added, errors };
+        }
+
+        function handleFarmerCSVUpload() {
+            const fileInput = document.getElementById('farmerCsvInput');
+            const resultBox = document.getElementById('farmerUploadResult');
+            if (!fileInput.files || fileInput.files.length === 0) {
+                resultBox.className = 'upload-result error';
+                resultBox.innerHTML = 'Please choose a CSV file first.';
+                return;
+            }
+
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                const result = importFarmersFromCSV(e.target.result);
+                if (result.errors.length > 0 && result.updated === 0 && result.added === 0) {
+                    resultBox.className = 'upload-result error';
+                    resultBox.innerHTML = '<strong>Upload failed:</strong><br>' + result.errors.map(escapeHTMLDB).join('<br>');
+                } else {
+                    resultBox.className = 'upload-result success';
+                    resultBox.innerHTML = `<strong>Upload complete:</strong> ${result.updated} farmer(s) updated, ${result.added} farmer(s) added.` +
+                        (result.errors.length > 0 ? '<br><em>Some rows were skipped:</em><br>' + result.errors.map(escapeHTMLDB).join('<br>') : '');
+                    renderDatabase();
+                }
+            };
+            reader.readAsText(fileInput.files[0]);
         }
     </script>
 </body>

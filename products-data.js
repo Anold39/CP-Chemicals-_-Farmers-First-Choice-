@@ -100,6 +100,42 @@ function getStockStatus(stock) {
 }
 
 /**
+ * Parses one CSV line respecting double-quoted fields (so a quoted field
+ * containing a comma, e.g. "Maize, Soya", is kept as a single value instead
+ * of being split apart). Handles escaped "" inside quotes per RFC 4180.
+ * A naive line.split(',') was used here previously and silently corrupted
+ * any row containing a comma inside a quoted field -- fixed after testing
+ * confirmed the corruption (values shifting into the wrong column).
+ */
+function parseCSVLine(line) {
+    const result = [];
+    let current = '';
+    let inQuotes = false;
+    for (let i = 0; i < line.length; i++) {
+        const char = line[i];
+        if (inQuotes) {
+            if (char === '"') {
+                if (line[i + 1] === '"') { current += '"'; i++; }
+                else { inQuotes = false; }
+            } else {
+                current += char;
+            }
+        } else {
+            if (char === '"') {
+                inQuotes = true;
+            } else if (char === ',') {
+                result.push(current.trim());
+                current = '';
+            } else {
+                current += char;
+            }
+        }
+    }
+    result.push(current.trim());
+    return result;
+}
+
+/**
  * Parses an uploaded CSV (name,category,unitSize,price,stock,description)
  * and merges it into the catalogue: existing products (matched by name) are
  * updated in place; new names are appended. Returns a summary object.
@@ -110,7 +146,7 @@ function importProductsFromCSV(csvText) {
     const lines = csvText.split(/\r?\n/).map(l => l.trim()).filter(l => l.length > 0);
     if (lines.length < 2) return { updated: 0, added: 0, errors: ["CSV appears to be empty or missing a header row."] };
 
-    const header = lines[0].split(',').map(h => h.trim().toLowerCase());
+    const header = parseCSVLine(lines[0]).map(h => h.toLowerCase());
     const nameIdx = header.indexOf('name');
     const catIdx = header.indexOf('category');
     const sizeIdx = header.indexOf('unitsize');
@@ -127,7 +163,7 @@ function importProductsFromCSV(csvText) {
     const errors = [];
 
     for (let i = 1; i < lines.length; i++) {
-        const cols = lines[i].split(',').map(c => c.trim());
+        const cols = parseCSVLine(lines[i]);
         const name = cols[nameIdx];
         if (!name) { errors.push(`Row ${i + 1}: missing product name, skipped.`); continue; }
         const price = parseFloat(cols[priceIdx]);
