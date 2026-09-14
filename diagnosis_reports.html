@@ -36,6 +36,7 @@
         .source-badge { padding: 3px 10px; border-radius: 12px; font-size: 0.72rem; font-weight: bold; white-space: nowrap; }
         .source-ai { background: #e3f2fd; color: #1565c0; }
         .source-direct { background: #f3e5f5; color: var(--purple); }
+        .source-escalation { background: #fff3e0; color: #e65100; }
         .action-btn { background: none; border: none; cursor: pointer; font-size: 0.95rem; }
         .search-bar { margin-bottom: 15px; }
         .search-bar input { width: 100%; max-width: 400px; padding: 10px; border-radius: 6px; border: 1px solid #ddd; }
@@ -146,11 +147,13 @@
 
             tbody.innerHTML = log.map(r => {
                 const isAI = r.source === 'AI Advisory Portal';
+                const isEscalation = r.source === 'Agronomist (via Escalation)';
+                const badgeClass = isAI ? 'source-ai' : (isEscalation ? 'source-escalation' : 'source-direct');
                 return `
                     <tr>
                         <td><small>${escapeHTMLDiag(r.id)}</small></td>
                         <td style="color:#888;">${escapeHTMLDiag(r.date)}<br>${escapeHTMLDiag(r.time)}</td>
-                        <td><span class="source-badge ${isAI ? 'source-ai' : 'source-direct'}">${escapeHTMLDiag(r.source)}</span></td>
+                        <td><span class="source-badge ${badgeClass}">${escapeHTMLDiag(r.source)}</span></td>
                         <td>${escapeHTMLDiag(r.farmerName) || '<em style="color:#aaa;">Not captured</em>'}</td>
                         <td>${escapeHTMLDiag(r.crop)}${r.symptom ? ' / ' + escapeHTMLDiag(r.symptom) : ''}</td>
                         <td>${escapeHTMLDiag(r.productRecommended) || '<em style="color:#aaa;">None</em>'}</td>

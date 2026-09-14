@@ -56,6 +56,7 @@
 </div>
 
 <script src="products-data.js"></script>
+<script src="diagnosis-log.js"></script>
 <script>
     document.addEventListener('DOMContentLoaded', renderTable);
 
@@ -103,13 +104,15 @@
             const isResolved = item.status === 'Resolved';
             const prevReplyHTML = item.agronomistReply ? `
                 <div class="prev-reply-box">
-                    <strong class="small text-success">Sent to farmer${item.repliedAt ? ' &middot; ' + escapeHTML(item.repliedAt) : ''}:</strong>
+                    <strong class="small text-success">Sent to farmer${item.repliedAt ? ' &middot; ' + escapeHTML(item.repliedAt) : ''}${item.respondedBy ? ' &middot; by ' + escapeHTML(item.respondedBy) : ''}:</strong>
                     <p class="mb-1 small">${escapeHTML(item.agronomistReply)}</p>
                     ${item.recommendedProduct ? `<span class="badge bg-success">Recommended: ${escapeHTML(item.recommendedProduct)}</span>` : ''}
                 </div>` : '';
 
             const replyFormHTML = `
                 <div class="reply-box">
+                    <label class="form-label small fw-semibold mb-1">Your name (agronomist responding):</label>
+                    <input type="text" id="replyAgronomist_${item.id}" class="form-control form-control-sm mb-2" placeholder="e.g. Simba Moyo" value="${escapeHTML(item.respondedBy || '')}">
                     <label class="form-label small fw-semibold mb-1">Your response to the farmer:</label>
                     <textarea id="replyText_${item.id}" class="form-control form-control-sm mb-2" rows="2" placeholder="Type your agronomic advice here...">${escapeHTML(item.agronomistReply || '')}</textarea>
                     <label class="form-label small fw-semibold mb-1">Recommend a product (optional):</label>
@@ -153,28 +156,53 @@
     }
 
     function sendEscalationResponse(ticketId) {
+        const agronomistName = document.getElementById(`replyAgronomist_${ticketId}`).value.trim();
         const replyText = document.getElementById(`replyText_${ticketId}`).value.trim();
         const recommendedProduct = document.getElementById(`replyProduct_${ticketId}`).value;
 
+        if (!agronomistName) {
+            alert('Please enter your name so this response (and the diagnosis report it creates) is attributed correctly.');
+            return;
+        }
         if (!replyText) {
             alert('Please type a response before sending.');
             return;
         }
 
         const escalations = getEscalations();
+        let ticketForLog = null;
         const updated = escalations.map(item => {
             if (item.id === ticketId) {
                 item.agronomistReply = replyText;
                 item.recommendedProduct = recommendedProduct || '';
+                item.respondedBy = agronomistName;
                 item.repliedAt = new Date().toLocaleString();
                 item.status = 'Resolved';
                 item.farmerNotified = false;
+                ticketForLog = item;
             }
             return item;
         });
         saveEscalations(updated);
+
+        // Mirror this response into the shared Diagnosis Reports history (diagnosis_reports.html),
+        // distinctly sourced so it isn't confused with an unassisted AI match or a fully offline
+        // direct consultation -- this is a human diagnosis that started as an AI escalation.
+        if (ticketForLog && typeof logDiagnosis === 'function') {
+            logDiagnosis({
+                source: 'Agronomist (via Escalation)',
+                farmerName: ticketForLog.farmerName,
+                crop: ticketForLog.crop,
+                symptom: ticketForLog.symptom,
+                query: ticketForLog.userQuery,
+                productRecommended: recommendedProduct || '',
+                agronomistName: agronomistName,
+                notes: `Resolved via AI Escalations ticket ${ticketId}. Response: ${replyText}`
+            });
+        }
+
         renderTable();
-        alert('Response sent. The farmer will see this the next time they open the AI Advisory Portal and check their escalation status (same device/browser only).');
+        alert('Response sent and logged to Diagnosis Reports. The farmer will see this the next time they open the AI Advisory Portal and check their escalation status (same device/browser only).');
     }
 
     function toggleStatus(ticketId) {
