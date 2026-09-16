@@ -51,6 +51,30 @@
         </div>
     </div>
 
+    <!-- CSV Import / Export -->
+    <div class="card mb-3 border-start border-4 border-primary">
+        <div class="card-body">
+            <h6 class="fw-bold text-primary"><i class="bi"></i> Bulk Resolve / Export via CSV</h6>
+            <p class="small text-muted mb-2">
+                Export every ticket (including its response, if any) for offline review or record-keeping.
+                To bulk-resolve, upload a CSV with header <code>ticketId,agronomistName,response,recommendedProduct</code>
+                &mdash; useful if an agronomist reviewed several tickets offline and is uploading all the answers at once.
+                Matches existing tickets by <code>ticketId</code>; unknown ticket IDs are skipped and listed below.
+                <code>recommendedProduct</code> is optional and must exactly match a product name in the catalogue.
+            </p>
+            <div class="row g-2 align-items-center">
+                <div class="col-md-6">
+                    <input type="file" id="escalationCsvInput" accept=".csv" class="form-control form-control-sm">
+                </div>
+                <div class="col-md-6 d-flex gap-2">
+                    <button class="btn btn-sm btn-primary" onclick="handleEscalationCSVUpload()"><i class="bi"></i> Upload &amp; Resolve</button>
+                    <button class="btn btn-sm btn-outline-secondary" onclick="exportEscalationsCSV()"><i class="bi"></i> Export All as CSV</button>
+                </div>
+            </div>
+            <div id="escalationUploadResult" class="small mt-2"></div>
+        </div>
+    </div>
+
     <!-- Escalations List -->
     <div id="escalationList"></div>
 </div>
@@ -230,6 +254,166 @@
         return String(str).replace(/[&<>'"]/g, 
             tag => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', "'": '&#39;', '"': '&quot;' }[tag] || tag)
         );
+    }
+
+    // RFC 4180-respecting CSV line parser (a naive line.split(',') was found, during testing of the
+    // Farmer Database and Inventory CSV features, to silently corrupt any field containing a comma
+    // inside quotes -- e.g. a query or response like "yellowing, wilting leaves". Applied here from
+    // the start rather than repeating that mistake a third time.
+    function parseCSVLineEsc(line) {
+        const result = [];
+        let current = '';
+        let inQuotes = false;
+        for (let i = 0; i < line.length; i++) {
+            const char = line[i];
+            if (inQuotes) {
+                if (char === '"') {
+                    if (line[i + 1] === '"') { current += '"'; i++; }
+                    else { inQuotes = false; }
+                } else {
+                    current += char;
+                }
+            } else {
+                if (char === '"') {
+                    inQuotes = true;
+                } else if (char === ',') {
+                    result.push(current.trim());
+                    current = '';
+                } else {
+                    current += char;
+                }
+            }
+        }
+        result.push(current.trim());
+        return result;
+    }
+
+    function escapeCSVFieldEsc(val) {
+        const s = String(val == null ? '' : val);
+        if (s.includes(',') || s.includes('"') || s.includes('\n')) {
+            return '"' + s.replace(/"/g, '""') + '"';
+        }
+        return s;
+    }
+
+    function exportEscalationsCSV() {
+        const escalations = getEscalations();
+        if (escalations.length === 0) { alert('No escalations to export yet.'); return; }
+
+        const headers = ['Ticket ID', 'Date/Time', 'Farmer Name', 'Farmer Phone', 'Crop', 'Symptom',
+                          'Query', 'Status', 'Agronomist Response', 'Recommended Product', 'Responded By', 'Replied At'];
+        const rows = escalations.map(e => [
+            e.id, e.timestamp, e.farmerName, e.farmerPhone, e.crop, e.symptom, e.userQuery, e.status,
+            e.agronomistReply || '', e.recommendedProduct || '', e.respondedBy || '', e.repliedAt || ''
+        ].map(escapeCSVFieldEsc).join(','));
+        const csv = headers.join(',') + '\n' + rows.join('\n');
+
+        const blob = new Blob([csv], { type: 'text/csv' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = 'CP_Chemicals_AI_Escalations_' + new Date().toISOString().slice(0, 10) + '.csv';
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
+    }
+
+    /**
+     * Bulk-resolves tickets from an uploaded CSV (ticketId,agronomistName,response,recommendedProduct).
+     * Mirrors sendEscalationResponse()'s effect for each matched row, including logging each resolution
+     * to the shared Diagnosis Reports history, so a bulk upload is indistinguishable in its downstream
+     * effects from resolving the same tickets one at a time through the form.
+     */
+    function importEscalationResolutionsFromCSV(csvText) {
+        const lines = csvText.split(/\r?\n/).map(l => l.trim()).filter(l => l.length > 0);
+        if (lines.length < 2) return { resolved: 0, errors: ["CSV appears to be empty or missing a header row."] };
+
+        const header = parseCSVLineEsc(lines[0]).map(h => h.toLowerCase());
+        const idIdx = header.indexOf('ticketid');
+        const agronomistIdx = header.indexOf('agronomistname');
+        const responseIdx = header.indexOf('response');
+        const productIdx = header.indexOf('recommendedproduct');
+
+        if (idIdx === -1 || agronomistIdx === -1 || responseIdx === -1) {
+            return { resolved: 0, errors: ["CSV header must include at least: ticketId, agronomistName, response."] };
+        }
+
+        const escalations = getEscalations();
+        let resolved = 0;
+        const errors = [];
+        const toLog = [];
+
+        for (let i = 1; i < lines.length; i++) {
+            const cols = parseCSVLineEsc(lines[i]);
+            const ticketId = cols[idIdx];
+            const agronomistName = cols[agronomistIdx];
+            const response = cols[responseIdx];
+            const recommendedProduct = productIdx > -1 ? (cols[productIdx] || '') : '';
+
+            if (!ticketId || !agronomistName || !response) {
+                errors.push(`Row ${i + 1}: missing ticketId, agronomistName, or response, skipped.`);
+                continue;
+            }
+
+            const idx = escalations.findIndex(e => e.id === ticketId);
+            if (idx === -1) {
+                errors.push(`Row ${i + 1}: ticket "${ticketId}" not found, skipped.`);
+                continue;
+            }
+
+            if (recommendedProduct && !findProductByName(recommendedProduct)) {
+                errors.push(`Row ${i + 1}: product "${recommendedProduct}" not found in catalogue \u2014 response saved without a product attached.`);
+            }
+
+            escalations[idx].agronomistReply = response;
+            escalations[idx].recommendedProduct = (recommendedProduct && findProductByName(recommendedProduct)) ? recommendedProduct : '';
+            escalations[idx].respondedBy = agronomistName;
+            escalations[idx].repliedAt = new Date().toLocaleString();
+            escalations[idx].status = 'Resolved';
+            escalations[idx].farmerNotified = false;
+            resolved++;
+            toLog.push({ ...escalations[idx] });
+        }
+
+        saveEscalations(escalations);
+
+        if (typeof logDiagnosis === 'function') {
+            toLog.forEach(t => logDiagnosis({
+                source: 'Agronomist (via Escalation)',
+                farmerName: t.farmerName,
+                crop: t.crop,
+                symptom: t.symptom,
+                query: t.userQuery,
+                productRecommended: t.recommendedProduct || '',
+                agronomistName: t.respondedBy,
+                notes: `Resolved via bulk CSV upload, AI Escalations ticket ${t.id}. Response: ${t.agronomistReply}`
+            }));
+        }
+
+        return { resolved, errors };
+    }
+
+    function handleEscalationCSVUpload() {
+        const fileInput = document.getElementById('escalationCsvInput');
+        const resultBox = document.getElementById('escalationUploadResult');
+        if (!fileInput.files || fileInput.files.length === 0) {
+            resultBox.innerHTML = '<span class="text-danger">Please choose a CSV file first.</span>';
+            return;
+        }
+
+        const reader = new FileReader();
+        reader.onload = (e) => {
+            const result = importEscalationResolutionsFromCSV(e.target.result);
+            if (result.resolved === 0 && result.errors.length > 0) {
+                resultBox.innerHTML = '<span class="text-danger"><strong>Upload failed:</strong><br>' + result.errors.map(escapeHTML).join('<br>') + '</span>';
+            } else {
+                resultBox.innerHTML = '<span class="text-success"><strong>' + result.resolved + ' ticket(s) resolved and logged to Diagnosis Reports.</strong></span>' +
+                    (result.errors.length > 0 ? '<br><span class="text-warning">Some rows were skipped:</span><br>' + result.errors.map(escapeHTML).join('<br>') : '');
+                renderTable();
+            }
+        };
+        reader.readAsText(fileInput.files[0]);
     }
 </script>
 </body>
