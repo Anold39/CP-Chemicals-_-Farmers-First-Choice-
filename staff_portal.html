@@ -153,6 +153,10 @@
                 <i class="fas fa-boxes-stacked"></i>
                 <span>Inventory Management</span>
             </a>
+            <a href="manage_testimonials.html" class="tool-card" style="border-top-color:#f9a825;">
+                <i class="fas fa-quote-left"></i>
+                <span>Manage Testimonials</span>
+            </a>
         </div>
 
         <hr>
@@ -192,6 +196,7 @@
 
     </div>
 
+    <script src="diagnosis-log.js"></script>
     <script>
         function logoutStaff() {
             if(confirm("Are you sure you want to log out of the Agronomist Dashboard?")) {
@@ -261,6 +266,24 @@
             queries[index].status = 'Resolved';
 
             localStorage.setItem('agronomyQueries', JSON.stringify(queries));
+
+            // Mirror this reply into the shared Diagnosis Reports history (diagnosis_reports.html),
+            // distinctly sourced so it isn't confused with an AI match, a fully offline direct
+            // consultation, or an AI-escalation follow-up -- this is a human reply to a farmer's
+            // Agri-Talk question.
+            if (typeof logDiagnosis === 'function') {
+                logDiagnosis({
+                    source: 'Agronomist (via Agri-Talk)',
+                    farmerName: queries[index].farmerName || '',
+                    crop: '',
+                    symptom: '',
+                    query: queries[index].message || '',
+                    productRecommended: '',
+                    agronomistName: '',
+                    notes: `Agri-Talk reply (branch: ${queries[index].branch || 'General'}): ${replyText}`
+                });
+            }
+
             loadFarmerQueries();
         }
 

@@ -140,17 +140,8 @@
     <section class="testimonials-section">
         <h2 style="color: #2e7d32;">Farmer Testimonials</h2>
         <p>Real stories from our network across Zimbabwe</p>
-        <div class="testimonial-grid">
-            <div class="testimonial-card">
-                <div class="star-rating"><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i></div>
-                <p>"The CP Farmer discount saved me over $200 on my tobacco chemicals this season. The AI advisor is a game changer!"</p>
-                <h4>— Tafadzwa C., Mvurwi</h4>
-            </div>
-            <div class="testimonial-card">
-                <div class="star-rating"><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i></div>
-                <p>"Great support from the Agronomy team. Whenever I have a pest issue, they respond almost instantly with the right solution."</p>
-                <h4>— Rumbidzai G., Mazowe</h4>
-            </div>
+        <div class="testimonial-grid" id="testimonialGrid">
+            <p style="text-align:center; color:#888;">Loading...</p>
         </div>
     </section>
 
@@ -168,7 +159,35 @@
         </a>
     </footer>
 
+    <script src="testimonials-data.js"></script>
     <script>
+        function escapeHTMLTestimonial(str) {
+            return String(str == null ? '' : str).replace(/[&<>'"]/g,
+                tag => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', "'": '&#39;', '"': '&quot;' }[tag] || tag)
+            );
+        }
+
+        function renderTestimonials() {
+            const grid = document.getElementById('testimonialGrid');
+            const testimonials = getTestimonials();
+
+            if (testimonials.length === 0) {
+                grid.innerHTML = '';
+                return;
+            }
+
+            grid.innerHTML = testimonials.map(t => {
+                const starIcons = '<i class="fas fa-star"></i>'.repeat(Math.max(1, Math.min(5, parseInt(t.rating) || 5)));
+                return `
+                    <div class="testimonial-card">
+                        <div class="star-rating">${starIcons}</div>
+                        <p>"${escapeHTMLTestimonial(t.quote)}"</p>
+                        <h4>&mdash; ${escapeHTMLTestimonial(t.name)}, ${escapeHTMLTestimonial(t.location)}</h4>
+                    </div>`;
+            }).join('');
+        }
+        renderTestimonials();
+
         // --- Star Rating Interaction ---
         let selectedRating = 5;
         const stars = document.querySelectorAll('#ratingSystem i');
@@ -219,6 +238,7 @@
                 phone: phoneVal,
                 district: document.getElementById('farmerDistrict').value,
                 crops: selectedCrops.length > 0 ? selectedCrops.join(", ") : "None Selected",
+                hectares: parseFloat(document.getElementById('farmSize').value) || 0,
                 rating: selectedRating,
                 date: new Date().toLocaleDateString()
             };
